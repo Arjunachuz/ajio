@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="background-color: burlywood;">
+        <h1>registerUser</h1>
+    </div>
+    <div style="background-color: aqua; width: 100%; height: 700px; padding-top:150px;">
+        <div style="background-color: white; width: 70%; height: 600px; margin: auto;">
+            <h2 style="text-align: center; padding-top: 50px;">Register</h2>
+            <div style="display: inline;">
+                {% if messages %}
+                {% for message in messages %}
+                   <h4 style="text-align: center; padding-top: 50px; color: green;">{{message}}</h4></div>
+                {% endfor %}
+                {% endif %}
+            <form action="{% url 'registerUser' %}" method="post">
+                {% csrf_token %}
+            <div style="width: 80%; height: 400px; margin: auto;">
+                <div style="width: 90%; height: 90px; margin: auto;">
+                    <div style="float: left; margin-right: 150px;">
+                    <label style="position: relative; top: 50px; left: 100px;" for="">First Name</label>
+                
+                    </div>
+                    <div>
+                    <label style="position: relative; top: 50px; left: 250px;" for="">Last Name</label>
+                    
+                    
+                    </div>
+                    
+                </div>
+                <div style=" display: inline; position: relative; left: 150px; letter-spacing: 200px;">
+                {{form.first_name}}
+                {{form.last_name}}
+                </div>
+                 
+                <div style="width: 90%; height: 90px; margin: auto;">
+                    <div style="float: left; margin-right: 150px;">
+                    <label style="position: relative; top: 50px; left: 100px;" for="">Username</label>
+                    
+                    </div>
+                    <div>
+                    <label style="position: relative; top: 50px; left: 250px;" for="">Email</label>
+                   
+                    </div>
+                    
+                </div>
+                <div style=" display: inline; position: relative; left: 150px; letter-spacing: 200px;">
+                    {{form.username}}
+                    {{form.email}}
+                    </div>
+                <div style="width: 90%; height: 90px; margin: auto;">
+                    <div style="float: left; margin-right: 150px;">
+                    <label style="position: relative; top: 50px; left: 100px;" for="">Pasword</label>
+                  
+                    </div>
+                    <div>
+                    <label style="position: relative; top: 50px; left: 250px;" for="">Confirm Password</label>
+                   
+                    </div>
+                       
+                </div>
+                <div style=" display: inline; position: relative; left: 150px; letter-spacing: 200px;">
+                    {{form.password}}
+                    {{form.confirm_password}}
+                    </div>
+                
+                <div style="display: inline;">
+                    {% for field in form %}
+                       {% if field.errors %}
+                          {% for error in field.errors %}
+                             <h5 style="color: red; text-align: center;">{{error}}</h5>
+                          {% endfor %}
+                       {% endif %}
+                    {% endfor %}
+                    <h5 style="text-align: center; color: red;">{{form.non_field_errors}}</h5>
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <button style="display: flex; justify-content: center;" type="submit">register</button>
+                </div>
+                
+            </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
