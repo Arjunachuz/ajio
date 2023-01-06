@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body  style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;" class="bg-blue-900">
+    <header class="bg-white p-4">
+        <nav class="flex justify-between items-center w-[88%]">
+            <div>
+                <img class="w-52 cursor-pointer" src="{% static 'images/AJI (1).png' %}" alt="logo">
+            </div>
+            <div>
+                <ul class="flex items-center gap-[8vw]">
+                    <li>
+                        <a class="relative text-xl font-bold cursor-pointer transition-all duration-500 before:content-['']
+                                  before:absolute before:-bottom-2 before:left-0 before:w-0 before:h-1.5 before:rounded-full
+                                  before:oppacity-0 before:transition-all before:duration-500 before:bg-gradient-to-r before:from-blue-900
+                                  before:via-blue-500 before:to-blue-900 hover:before:w-full hover:before:oppacity-100 " href="">Home</a>
+                    </li>
+                    <li>
+                        <a class="relative text-xl font-bold cursor-pointer transition-all duration-500 before:content-['']
+                        before:absolute before:-bottom-2 before:left-0 before:w-0 before:h-1.5 before:rounded-full
+                        before:oppacity-0 before:transition-all before:duration-500 before:bg-gradient-to-r before:from-blue-900
+                        before:via-blue-500 before:to-blue-900 hover:before:w-full hover:before:oppacity-100 "  href="">Service</a>
+                    </li>
+                    <li>
+                        <a class="relative text-xl font-bold cursor-pointer transition-all duration-500 before:content-['']
+                        before:absolute before:-bottom-2 before:left-0 before:w-0 before:h-1.5 before:rounded-full
+                        before:oppacity-0 before:transition-all before:duration-500 before:bg-gradient-to-r before:from-blue-900
+                        before:via-blue-500 before:to-blue-900 hover:before:w-full hover:before:oppacity-100 "  href="">About</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+              <button class="bg-white border-2 border-black w-20"><a href="{% url 'myAccount' %}">{{user.username}}</a></button>
+            </div>
+            <div>
+              <button class="bg-white border-2 border-black w-20"><a href="{% url 'logout' %}">Logout</a></button>
+            </div>
+           
+        </nav>
+    </header>
+    
+</body>
+</html>
