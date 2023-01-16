@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
+from vendor.models import Vendor
 # Create your views here.
 
 # Restrict vendor from user's pages
@@ -112,9 +113,9 @@ def activate(request, uidb64, token):
         return redirect('myAccount')
 
 def login(request):
-    # if request.user.is_authenticated:
-    #     messages.warning(request,'You already logged in !')
-    #     return redirect('myAccount')
+    if request.user.is_authenticated:
+        messages.warning(request,'You already logged in !')
+        return redirect('myAccount')
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -151,6 +152,16 @@ def userHome(request):
 @user_passes_test(check_role_vendor)
 def vendorHome(request):
         return render(request,'accounts/vendorHome.html')
+
+@login_required(login_url ='login')
+def vendor_dashboard(request):
+    # vendor = Vendor.objects.get(user=request.user)
+    # context = {'vendor':vendor}
+    return render(request,'accounts/vendor_dashboard.html')   
+
+@login_required(login_url ='login')
+def user_dashboard(request):
+    return render(request,'accounts/user_dashboard.html')        
 
 def forgot_password(request):
     if request.method == 'POST':
