@@ -154,9 +154,8 @@ def vendorHome(request):
         return render(request,'accounts/vendorHome.html')
 
 @login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
 def vendor_dashboard(request):
-    # vendor = Vendor.objects.get(user=request.user)
-    # context = {'vendor':vendor}
     return render(request,'accounts/vendor_dashboard.html')   
 
 @login_required(login_url ='login')
