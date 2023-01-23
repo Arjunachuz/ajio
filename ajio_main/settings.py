@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'accounts.context_processor.get_vendor',
+                'accounts.context_processor.get_google_api',
             ],
         },
     },
@@ -145,5 +146,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'django.ajio@gmail.com'
 EMAIL_HOST_PASSWORD = 'gcngfpzjczulpdsu'
 EMAIL_PORT = 587
+
+GOOGLE_API_KEY = 'AIzaSyCwqMrM1jXgqzvygFHo0hcT1WhB7NCpQy0'
 
 
