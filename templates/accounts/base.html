@@ -52,8 +52,9 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="{% static 'js/modernizr.js' %}"></script>
         <script src="{% static 'js/bootstrap.js' %}"></script>
+    
         <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
-
+        
         <!-- <script src="{% static 'js/custom.js' %}"></script> -->
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -69,7 +70,7 @@
 
     {% endblock %}
     <script>
-        let autocomplete;
+let autocomplete;
 
 function initAutoComplete(){
 autocomplete = new google.maps.places.Autocomplete(

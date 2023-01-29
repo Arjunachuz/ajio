@@ -10,6 +10,9 @@ from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from vendor.models import Vendor
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 # Create your views here.
 
 # Restrict vendor from user's pages
@@ -212,6 +215,37 @@ def reset_password(request):
             messages.error(request, 'Password does not match.')
             return redirect('reset_password')
     return render(request, 'accounts/reset_password.html')
+
+def on_road(request):
+    vendors = Vendor.objects.filter(user__is_active=True)
+    context = {'vendors':vendors}
+    return render(request, 'accounts/on_road.html',context)    
+
+def search(request):
+    if  not 'address' in request.GET:
+        return redirect('on_road')
+    else:    
+        address = request.GET['address']
+        latitude = request.GET['lat']
+        longitude = request.GET['lng']
+        keyword = request.GET['keyword']
+
+        vendors = Vendor.objects.filter(vendor_name__icontains=keyword,user__is_active=True)
+        if latitude and longitude:
+            pnt = GEOSGeometry('POINT(%s %s)' % (longitude, latitude))
+            vendors = Vendor.objects.filter(vendor_name__icontains=keyword,user__is_active=True,user_profile__location__distance_lte=(pnt, D(km=20))).annotate(distance=Distance("user_profile__location", pnt)).order_by("distance")
+            
+            for v in vendors:
+                v.kms = round(v.distance.km, 1) 
+
+        vendor_count = vendors.count()
+        context = {
+            'vendors':vendors,
+            'vendor_count':vendor_count,
+            'source_location':address,
+            }
+
+        return render(request, 'accounts/on_road.html',context) 
 
 
 

@@ -1,0 +1,96 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+<h1>On Road </h1>
+<form action="{% url 'search' %}" method="GET">
+<div class="w-100% h-52 bg-blue-500 flex flex-row gap-40 justify-center items-center">
+    
+    <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
+        <input class="text-gray text-center w-4/5" type="text" placeholder="Search by Name..." name="keyword">
+    </div>
+    <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
+        <input class="text-gray text-center w-4/5" type="text" id="id_address" required name="address" placeholder="Search by Place...">
+        <input type="hidden" name="lat" value="" id="id_latitude">
+        <input type="hidden" name="lng" value="" id="id_longititude">
+    </div>
+    <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
+        <input class="text-gray text-center w-4/5" type="text" placeholder="Give current location">
+    </div>
+    <div class="border-2 border-black h-16 w-48 flex flex-col justify-center items-center  bg-green-500">
+        <input class="text-center text-white" type="submit" value="Search">
+    </div>
+    </form>
+
+
+</div>
+<div class="main-section">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 10px;margin-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="row">
+                        <aside class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                            
+                        </aside>
+                        <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                            <div class="listing-sorting-holder">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <h4>{{vendor_count}}  Workshops found</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="listing simple">
+                                {% for vendor in vendors %}
+                                <ul>
+                                    <li>
+                                        <div class="img-holder">
+                                            <figure>
+                                                <a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="img-list wp-post-image" alt=""></a>
+                                            </figure>
+                                            <!-- <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span> -->
+                                        </div>
+                                        <div class="text-holder">
+                                            <div class="list-rating">
+                                                <div class="">
+                                                    <!-- <span class="rating-box" style="width: 100%;"></span> -->
+                                                </div>
+                                                <!-- <span class="">(1)</span> -->
+                                            </div>
+                                            <div class="post-title">
+                                                <h5>
+                                                    <a href="listing-detail.html">{{vendor.vendor_name}}</a>
+                                                    <!-- <span class="sponsored text-color">Sponsored</span> -->
+                                                </h5>
+                                            </div>
+                                            <span class="">{{vendor.user_profile.address}}</span><br>
+                                            {% if vendor.kms %}
+                                                <span><b>{{vendor.kms}}, km</b> away from {{source_location}}</span>
+                                            {% endif %}    
+                                            
+                                        </div>
+                                        <div class="list-option">
+
+                                            <a href="#" class="viewmenu-btn text-color">View Menu</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                                {% endfor %}
+                            </div>
+                            
+                        </div>
+                        <!-- <div class="section-sidebar col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <div class="message-box" style="background-color: #fa9918;">
+                                <strong>I'm not Listed!</strong><span>is your restaurant or
+                                    business not
+                                    listed on over site</span>
+                                <a href="#" class="request-btn">Add Your business!</a>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

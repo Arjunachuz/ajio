@@ -22,6 +22,10 @@ urlpatterns = [
     path('vendor_dashboard/',views.vendor_dashboard, name='vendor_dashboard'),
     path('user_dashboard/',views.user_dashboard, name='user_dashboard'),
 
+    path('on_road/',views.on_road, name='on_road'),
+
+    path('search/',views.search, name='search'),
+
     path('vendor/',include('vendor.urls')),
 
 ]
