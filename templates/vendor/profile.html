@@ -1,6 +1,8 @@
 {% extends 'accounts/base.html' %}
 {% load static %}
     {% block content %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
+        
     <div class="main-section">
         {% include 'includes/v_cover.html' %}
         <div class="page-section account-header buyer-logged-in">
@@ -14,6 +16,7 @@
                         <div class="user-dashboard loader-holder">
                             <div class="user-holder">
                                 <h5 class="text-uppercase">Manage Your Workshop</h5>
+                                <br>
                                 <form action="{% url 'vprofile' %}" method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <div class="form-fields-set">
@@ -27,7 +30,11 @@
                                                                     <li class="gal-img">
                                                                         <div class="drag-list">
                                                                             <div class="item-thumb">
+                                                                                {% if profile.profile_picture %}
                                                                                 <img class="thumbnail" src="{{profile.profile_picture.url}}" alt="profile pic">
+                                                                                {% else %}
+                                                                                <img class="thumbnail" src="{% static 'images/vendor icon.jpg' %}" alt="profile pic">
+                                                                                {% endif %}
                                                                             </div>
                                                                         </div>
                                                                     </li>
@@ -49,7 +56,11 @@
                                                                     <li class="gal-img">
                                                                         <div class="drag-list">
                                                                             <div class="item-thumb">
+                                                                                {% if profile.cover_photos %}
                                                                                 <img class="thumbnail" src="{{profile.cover_photos.url}}" alt="cover pic">
+                                                                                {% else %}
+                                                                                <img class="thumbnail" src="{% static 'images/AJI.png' %}" alt="cover pic">
+                                                                                {% endif %}
                                                                             </div>
                                                                         </div>
                                                                     </li>
@@ -147,7 +158,7 @@
                                         <div>
                                             <div class="field-holder">
                                                 <div class="payment-holder input-button-loader">
-                                                    <input type="submit" value="Update Restaurant">
+                                                    <input type="submit" value="Update">
                                                 </div>
                                             </div>
                                         </div>

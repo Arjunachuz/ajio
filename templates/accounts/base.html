@@ -15,6 +15,7 @@
         <link href="{% static 'css/bootstrap-theme.css' %}" rel="stylesheet">
         <link href="{% static 'css/bootstrap-datepicker.css' %}" rel="stylesheet">
         <link href="{% static 'css/bootstrap-slider.css' %}" rel="stylesheet">
+        <!-- <link href="{% static 'css/custom.css' %}" rel="stylesheet"> -->
         <!-- Bootstrap Link End-->
         <!-- Iconmoon Link Start-->
         <link href="{% static 'css/iconmoon.css' %}" rel="stylesheet">
@@ -53,7 +54,6 @@
         <script src="{% static 'js/modernizr.js' %}"></script>
         <script src="{% static 'js/bootstrap.js' %}"></script>
     
-        <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
         
         <!-- <script src="{% static 'js/custom.js' %}"></script> -->
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -138,6 +138,44 @@ function onPlaceChanged (){
     } 
 } 
     </script>
+    <script>
+        var x = document.getElementById("location");
+        var current_location = sessionStorage.getItem("current_location")
+        if(current_location != ""){
+            x.value = current_location;
+        }
+        
+        function getLocation() {
+
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } else { 
+            x.innerHTML = "Geolocation is not supported by this browser.";
+          }
+        }
+        
+        function showPosition(position) {
+        
+            var lat = position.coords.latitude
+            var lng = position.coords.longitude
+            //send ajx req to  googlemap api
+            var GOOGLE_API_KEY = "{{GOOGLE_API_KEY}}"
+            var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"+&key="+GOOGLE_API_KEY
+            
+            $.ajax({
+                url:url,
+                type:"GET",
+                success:function(response){
+                    var current_location = response.results[0].formatted_address
+                    x.value = current_location
+                    sessionStorage.setItem("current_location", current_location)
+                    window.location = '?lat='+lat+'&lng='+lng
+                }
+            })
+        
+
+        }
+        </script>
     
     <script src="{% static 'js/responsive.menu.js' %}"></script>
 	<script src="{% static 'js/swiper.min.js' %}"></script>

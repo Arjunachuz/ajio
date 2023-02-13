@@ -25,6 +25,21 @@ urlpatterns = [
     path('on_road/',views.on_road, name='on_road'),
 
     path('search/',views.search, name='search'),
+    path('search_current/',views.search_current, name='search_current'),
+    
+    path('order/<int:vendor_id>/',views.order, name='order'),
+    
+    path('ajax/load-models/',views.load_models, name='ajax_load_models'),
+
+    path('order_detail/<int:order_id>/',views.order_detail, name='order_detail'),
+    path('order_bill/<int:order_id>/',views.order_bill, name='order_bill'),
+    path('order_bill/',views.order_bill, name='order_bill'),
+
+    path('accept/<int:order_id>/',views.accept, name='accept'),
+    path('decline/<int:order_id>/',views.decline, name='decline'),
+
+    path('end_page/<uidb64>/<token>/',views.end_page, name='end_page'),
+
 
     path('vendor/',include('vendor.urls')),
 

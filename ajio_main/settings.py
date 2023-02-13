@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     'accounts',
     'vendor',
+    'orders',
+    
 ]
 
 MIDDLEWARE = [
@@ -86,7 +88,7 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.postgresql',
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'ajio_db',
+        'NAME': 'ajio_database',
         'USER': 'postgres',
         'PASSWORD': '12345',
         'HOST': 'localhost', 

@@ -1,0 +1,10 @@
+{% autoescape off %}
+
+Hi {{user.first_name}},
+
+
+Congratsz your order is Accepted. Please click on the below link.
+http://{{domain}}{% url 'end_page' uidb64=uid token=token %}
+
+
+{% endautoescape %}

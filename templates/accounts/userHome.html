@@ -13,7 +13,7 @@
     <header class="bg-white p-4">
         <nav class="flex justify-between items-center w-[88%]">
             <div>
-                <img class="w-52 cursor-pointer" src="{% static 'images/AJI (1).png' %}" alt="logo">
+                <img class="w-52 cursor-pointer" src="{% static 'images/AJI.png' %}" alt="logo">
             </div>
             <div>
                 <ul class="flex items-center gap-[8vw]">
@@ -46,9 +46,24 @@
            
         </nav>
     </header>
+    {% for order in orders %}
+    <div class="alert alert-primary d-none">
+        {% if order.status == 'ACCEPTED' %}
+        <strong>Your service request on {{order.created_at}} is Accepted. Check your Mail for more details.</strong>
+        {% elif order.status == 'DECLINED' %}
+        <strong>Your service request on {{order.created_at}} is Declined. Check your Mail for more details.</strong>
+        {% endif %}
+      </div>
+    {% endfor %}
     <div class="bg-white cursor-pointer margin-auto border-2 border-black m-56 h-10 w-40">
         <a href="{% url 'on_road' %}"><h5>On Road service</h5></a>
     </div>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    setInterval(function() {
+      location.reload();
+    }, 5000); // Refresh the page every 5 seconds
+  </script>
 </body>
+
 </html>

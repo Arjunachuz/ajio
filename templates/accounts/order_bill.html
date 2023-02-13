@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"/>
+</head>
+<body>
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6">
+           <p>
+            <strong>Date:</strong> {{ order.created_at }}
+          </p>
+          <p>
+            <strong>Vehicle:</strong> {{ order.vehicle }}
+          </p>
+          <p>
+            <strong>Type:</strong> {{ order.type.name }}
+          </p>
+          <p>
+            <strong>Model:</strong> {{ order.model.name }}
+          </p>
+          <p>
+            <strong>Defect:</strong> {{ order.defect.name }}
+          </p>
+          <p>
+            <strong>Description:</strong> {{ order.description }}
+          </p>
+          <p>
+            <strong>Location:</strong>
+            <a href="{{ order.location }}" target="_blank">
+              <strong>{{order.location}}</strong>
+            </a>
+          </p>
+          <form action="{% url 'order_bill' order.id %}" method="POST">
+            {% csrf_token %}
+            <label for="">Price</label>
+            <input type="text" placeholder="Enter the total cost" name="price"><span>   Rs    </span>
+            <button type="submit">Send Bill</button>
+          </form>
+          <!-- <p>
+            <strong>Description:</strong> {{ order.phone_number }}
+          </p> -->
+        </div>
+        {% endfor %}
+      </div>
+</body>
+</html>

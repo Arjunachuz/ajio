@@ -1,6 +1,8 @@
 {% extends 'accounts/base.html' %}
 {% load static %}
 {% block content %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
+        
 <h1>On Road </h1>
 <form action="{% url 'search' %}" method="GET">
 <div class="w-100% h-52 bg-blue-500 flex flex-row gap-40 justify-center items-center">
@@ -9,16 +11,17 @@
         <input class="text-gray text-center w-4/5" type="text" placeholder="Search by Name..." name="keyword">
     </div>
     <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
-        <input class="text-gray text-center w-4/5" type="text" id="id_address" required name="address" placeholder="Search by Place...">
+        <input class="text-gray text-center w-4/5" type="text" id="id_address" name="address" placeholder="Search by Place...">
         <input type="hidden" name="lat" value="" id="id_latitude">
         <input type="hidden" name="lng" value="" id="id_longititude">
     </div>
-    <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
-        <input class="text-gray text-center w-4/5" type="text" placeholder="Give current location">
-    </div>
-    <div class="border-2 border-black h-16 w-48 flex flex-col justify-center items-center  bg-green-500">
-        <input class="text-center text-white" type="submit" value="Search">
-    </div>
+    
+        <button class="btn btn-danger" type="submit">Search</button>
+    
+    <!-- <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
+        <input class="text-gray text-center w-4/5" type="text" id="location" value="" placeholder="Give current location"><i class="icon-target5  cursor-pointer" onclick="getLocation()"></i>
+    </div> -->
+  
     </form>
 
 
@@ -46,9 +49,17 @@
                                     <li>
                                         <div class="img-holder">
                                             <figure>
+                                                {% if vendor.user_profile.profile_picture %}
                                                 <a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="img-list wp-post-image" alt=""></a>
+                                                {% else %}
+                                                <a href="#"><img src="{% static 'images/vendor icon.jpg' %}" class="img-list wp-post-image" alt=""></a>
+                                                {% endif %}
                                             </figure>
-                                            <!-- <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span> -->
+                                            {% if vendor.is_open %}
+                                            <span class="restaurant-status open"><em class="bookmarkRibbon"></em>Open</span>
+                                            {% else %}
+                                            <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span>
+                                            {% endif %}
                                         </div>
                                         <div class="text-holder">
                                             <div class="list-rating">
@@ -71,7 +82,7 @@
                                         </div>
                                         <div class="list-option">
 
-                                            <a href="#" class="viewmenu-btn text-color">View Menu</a>
+                                            <a href="{% url 'order' vendor.id %}" class="viewmenu-btn text-color">Try Out</a>
                                         </div>
                                     </li>
                                 </ul>

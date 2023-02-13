@@ -1,3 +1,46 @@
-<h1>vendor Home</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>vendor Home</h1>
 <button><a href="{% url 'vendor_dashboard' %}">Dashboard</a></button>
 <button><a href="{% url 'logout' %}">Logout</a></button>
+<button><a href="{% url 'order_bill' %}">Bills</a></button>
+<br>
+<br>
+<table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Created Date</th>
+        <th>Type</th>
+        <th>Model</th>
+        <th>Defect</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{ order.created_at }}</td>
+        <td>{{ order.type.name }}</td>
+        <td>{{ order.model.name }}</td>
+        <td>{{ order.defect.name }}</td>
+        <td><a href="{% url 'order_detail' order.id %}" class="btn btn-info">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+      setInterval(function() {
+        location.reload();
+      }, 5000); // Refresh the page every 5 seconds
+    </script>
+</body>
+</html>

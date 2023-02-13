@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from .forms import UserForm
+from .forms import UserForm,OrderForm
 from vendor.forms import VendorForm
 from .models import User,UserProfile
 from django.contrib import messages,auth
@@ -13,6 +13,9 @@ from vendor.models import Vendor
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from orders.models import Orders,Order_images,Models
+from django.db.models import Q
+
 # Create your views here.
 
 # Restrict vendor from user's pages
@@ -49,6 +52,7 @@ def registerUser(request):
             send_verification_email(request,user, mail_subject, email_template) 
 
             messages.success(request, 'Registration Sucessful')
+            messages.success(request, 'Check your E-mail')
             return redirect('registerUser')
         else:
             print('invalid form')
@@ -72,6 +76,7 @@ def registerVendor(request):
             user = form.save(commit=False)
             user.set_password(password)
             user.role = User.VENDOR
+            print(user.role)
             user.save()
             vendor = v_form.save(commit=False)
             vendor.user = user
@@ -85,6 +90,7 @@ def registerVendor(request):
             send_verification_email(request,user, mail_subject, email_template) 
 
             messages.success(request, 'Registration Sucessful')
+            messages.success(request, 'Check your E-mail')
             return redirect('registerVendor')
         else:
             print('Invalid form')
@@ -149,12 +155,20 @@ def myAccount(request):
 @login_required(login_url ='login')
 @user_passes_test(check_role_user)
 def userHome(request):
-        return render(request,'accounts/userHome.html')
+    user = request.user
+    orders = Orders.objects.filter(Q(user=user,status='ACCEPTED',is_seen=False) | Q(user=user,status='DECLINED',is_seen=False))
+    print(user)
+    return render(request,'accounts/userHome.html',{'orders':orders})
 
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
 def vendorHome(request):
-        return render(request,'accounts/vendorHome.html')
+    print(request.user)
+    vendor_id = request.user.id
+    print(vendor_id)
+    vendor = Vendor.objects.get(user__id=vendor_id)
+    orders = Orders.objects.filter(vendor=vendor,status='NEW')
+    return render(request,'accounts/vendorHome.html',{'orders':orders})
 
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
@@ -216,7 +230,10 @@ def reset_password(request):
             return redirect('reset_password')
     return render(request, 'accounts/reset_password.html')
 
+@login_required(login_url ='login')
 def on_road(request):
+    user = request.user
+    print(user)
     vendors = Vendor.objects.filter(user__is_active=True)
     context = {'vendors':vendors}
     return render(request, 'accounts/on_road.html',context)    
@@ -226,6 +243,7 @@ def search(request):
         return redirect('on_road')
     else:    
         address = request.GET['address']
+        request.session['address'] = address
         latitude = request.GET['lat']
         longitude = request.GET['lng']
         keyword = request.GET['keyword']
@@ -246,6 +264,162 @@ def search(request):
             }
 
         return render(request, 'accounts/on_road.html',context) 
+
+def search_current(request):
+    print('yyyyyyyyyyyyyyyyyyyyyyyyy')
+    if get_or_set_current_location(request) is not None:
+        print('llllllllllllllllllllllllllllll')
+
+        pnt = GEOSGeometry('POINT(%s %s)' % (get_or_set_current_location(request)))   
+        vendors = Vendor.objects.filter(user_profile__location__distance_lte=(pnt, D(km=20))).annotate(distance=Distance("user_profile__location", pnt)).order_by("distance")
+        print(vendors)    
+        for v in vendors:
+            v.kms = round(v.distance.km, 1) 
+        return render(request, 'accounts/on_road.html',{'vendors':vendors}) 
+    return redirect('on_road')       
+   
+
+def get_or_set_current_location(request):
+    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
+    if "lat" in request.session:
+        print('cccccccccccccccccccccccccccccccc')
+        lat = request.session['lat']        
+        lng = request.session['lng']
+        return lng, lat 
+    elif "lat" in request.GET:
+        print('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+        lat = request.GET('lat')           
+        lng = request.GET('lng')
+        request.session['lat'] = lat           
+        request.session['lng'] = lng  
+        return lng, lat
+    else:
+        return None  
+
+@login_required(login_url ='login')
+def order(request,vendor_id):
+    print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+    user = request.user
+    print(user)
+    vendor = Vendor.objects.get(id=vendor_id)
+    if request.method == 'POST':
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
+        print('inside request')
+        form = OrderForm(request.POST)
+        images = request.FILES.getlist('images')
+        if form.is_valid():
+            print('form is valid')
+            order = form.save(commit=False)
+            order.user = user
+            order.vendor = vendor
+            order.save()
+
+            for image in images:
+                order_images = Order_images.objects.create(
+                    order = order,
+                    images = image
+                )
+                order_images.save()
+            return redirect('myAccount')    
+            
+        else:
+            print(form.errors)
+
+    form = OrderForm()
+    return render(request, 'accounts/order.html',{'form':form,'vendor':vendor})
+
+def load_models(request):
+    vehicle_id = request.GET.get('vehicle_id')
+    models = Models.objects.filter(vehicle_id=vehicle_id).all()
+    print(models)
+    return render(request, 'accounts/load_models.html',{'models':models})    
+
+def order_detail(request,order_id):
+    order = Orders.objects.get(id=order_id)
+    images = Order_images.objects.filter(order=order)
+    return render(request, 'accounts/order_detail.html',{'order':order,'images':images})
+
+def accept(request,order_id):
+    order = Orders.objects.get(id=order_id)
+    user = order.user
+    print(user)
+    if request.method == 'POST':
+        phone_number = request.POST.get('phone_number')
+        eta = request.POST.get('eta')
+
+        order.v_phone_number = phone_number
+        order.eta = eta
+        order.status = 'ACCEPTED'
+        order.save()
+
+        mail_subject = 'Your order has been Accepted.'
+        email_template = 'accounts/emails/order_accepted_email.html'
+        send_verification_email(request,user, mail_subject, email_template) 
+
+        return redirect('order_bill',order_id=order_id)
+    return render(request, 'accounts/order_accept.html',{'order':order}) 
+
+def order_bill(requset,order_id=None):
+    user = requset.user
+    vendor_id = user.id
+    print(vendor_id)
+    vendor = Vendor.objects.get(user__id=vendor_id)
+    orders = Orders.objects.filter(Q(vendor=vendor,status='ACCEPTED') | Q(vendor=vendor,status='PENDING'))
+    print(orders)
+    if requset.method == 'POST':
+        price = requset.POST.get('price')
+        order = Orders.objects.get(id=order_id)
+        order.price = price
+        order.status = 'COMPLETED'
+        order.save()
+        return redirect('myAccount')
+    return render(requset, 'accounts/order_bill.html',{'orders':orders})    
+
+def decline(request,order_id):
+    order = Orders.objects.get(id=order_id)
+    user = order.user
+    print(user)
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        order.msg = message
+        order.status = 'DECLINED'
+        order.save()
+
+        mail_subject = 'Sorry the order has been Declined.'
+        email_template = 'accounts/emails/order_declined_email.html'
+        send_verification_email(request,user, mail_subject, email_template) 
+
+        return redirect('myAccount')
+
+    return render(request, 'accounts/order_decline.html',{'order':order})    
+
+
+def end_page(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        print(uid)
+        user = User._default_manager.get(pk=uid)
+        print(user)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None:
+            order = Orders.objects.filter(Q(user=user,status='ACCEPTED') | Q(user=user,status='DECLINED')).first()  
+            # order2 = Orders.objects.filter(user=user,status='DECLINED').first()  
+            print('kkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+            print(order)
+            if order.status == 'ACCEPTED':
+                order.status = 'PENDING' 
+                order.is_seen = True
+                order.save()
+                print(order.status)    
+                return render(request, 'accounts/end_page.html',{'order':order}) 
+            order.is_seen = True
+            order.save()    
+            return render(request, 'accounts/end_page.html',{'order':order}) 
+            # elif order2:
+            #     return render(request, 'accounts/end_page.html',{'order2':order2})    
+    return redirect('myAccount')        
 
 
 

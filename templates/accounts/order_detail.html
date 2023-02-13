@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <title>Order Detail</title>
+  </head>
+  <body onload="initMap({{order.latitude}}, {{order.longitude}});">
+    <div class="container mt-5">
+      <h2 class="text-center mb-3">Order Detail</h2>
+      <br>
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Vehicle:</strong> {{ order.vehicle }}
+          </p>
+          <p>
+            <strong>Type:</strong> {{ order.type.name }}
+          </p>
+          <p>
+            <strong>Model:</strong> {{ order.model.name }}
+          </p>
+          <p>
+            <strong>Defect:</strong> {{ order.defect.name }}
+          </p>
+          <p>
+            <strong>Description:</strong> {{ order.description }}
+          </p>
+          <p>
+            <strong>Description:</strong> {{ order.u_phone_number }}
+          </p>
+          <p>
+            <strong>Location:</strong>
+          </p>
+          <!-- <p>
+            <strong>Description:</strong> {{ order.phone_number }}
+          </p> -->
+        </div>
+        <div class="col-md-6">
+          <p class="text-center">
+              <!-- <strong>Location</strong> -->
+          </p>
+          
+        </div>
+        <div id="map" style="width:400px; height:400px;"></div>
+      </div>
+      <h3 class="text-center mt-3">Images</h3>
+      <div class="row">
+        <div class="col-lg-12" style="height: max-content; text-align: center; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px;">
+            {% for image in images %}
+              <div class="card" style="width: 200px; height: 200px; margin: 15px;">
+                <img style="width: 200px; height: 200px; object-fit:contain;" src="{{image.images.url}}" class="card-img-top" alt="">
+              </div>
+            {% endfor %}
+          </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12 text-center">
+          <a href="{% url 'accept' order.id %}"><button class="btn btn-success">Accept</button></a>
+          <a href="{% url 'decline' order.id %}"><button class="btn btn-danger">Decline</button></a>
+        </div>
+      </div>
+      <script>
+        function initMap(lat, lng) {
+  var myLatLng = {lat: lat, lng: lng};
+
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 8,
+    center: myLatLng
+  });
+
+  var marker = new google.maps.Marker({
+    position: myLatLng,
+    map: map
+  });
+}
+      </script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/

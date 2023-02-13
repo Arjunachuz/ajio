@@ -1,0 +1,10 @@
+{% autoescape off %}
+
+Hi {{user.first_name}},
+
+
+Sorry your order is Declined. Please click on the below link for more details.
+http://{{domain}}{% url 'end_page' uidb64=uid token=token %}
+
+
+{% endautoescape %}

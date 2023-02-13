@@ -26,7 +26,9 @@ def send_verification_email(request,user, mail_subject, email_template):
         'token': default_token_generator.make_token(user),
     }) 
     to_email = user.email
+    print(user.email)
     mail = EmailMessage(mail_subject,message,to=[to_email])
+    mail.content_subtype = 'html'
     mail.send()       
 
    

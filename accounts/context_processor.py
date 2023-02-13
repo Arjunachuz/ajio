@@ -5,6 +5,7 @@ from django.conf import settings
 def get_vendor(request):
   try:
     vendor = Vendor.objects.get(user=request.user)
+    print(vendor)
   except:
     vendor = None
   return dict(vendor=vendor)

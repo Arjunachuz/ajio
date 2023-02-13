@@ -1,0 +1,143 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+    {% block content %}
+    <div class="main-section">
+        {% include 'includes/v_cover.html' %}
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- load the side bar -->
+                    {% include 'includes/v_sidebar.html' %}
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                                <h5 class="text-uppercase">Manage Opening Hours</h5>
+                                <br>
+                                <br>
+                                 <table class="table opening_hours">
+                                    <tbody>
+                                        {% for hour in opening_hours %}  
+                                        <tr id="hour-{{hour.id}}">
+                                            <td><b>{{hour}}</b></td>
+                                            <td>{% if hour.is_closed %}Closed{% else %}{{hour.from_hour}} - {{hour.to_hour}}{% endif %}</td>
+                                            <td><a href="" class="remove_hour" data-url="{% url 'remove_opening_hours' hour.id %}">Remove</a></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                 </table>
+                                <br>
+                                <br>
+                                <form id="opening_hours">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-2 border border-2 mr-5">
+                                            {{form.day}}
+                                        </div>
+                                        <div class="col-md-2 border border-2 mr-5">
+                                            {{form.from_hour}}
+                                        </div>
+                                        <div class="col-md-2 border border-2 mr-5">
+                                            {{form.to_hour}}
+                                        </div>
+                                        <div class="col-md-3">
+                                            {{form.is_closed}} Set as Closed
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="hidden" value="{% url 'add_opening_hours' %}" id="add_hour_url">
+                                            <button class="btn btn-success add_hour">Add Hours</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Include SweetAlert2 CSS and JS files -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <script>
+        $('.add_hour').on('click', function(e){
+            e.preventDefault();
+            var day = document.getElementById('id_day').value
+            var from_hour = document.getElementById('id_from_hour').value
+            var to_hour = document.getElementById('id_to_hour').value
+            var is_closed = document.getElementById('id_is_closed').checked
+            var csrf_token = $('input[name=csrfmiddlewaretoken]').val()
+            var url = document.getElementById('add_hour_url').value
+
+            if(is_closed){
+                is_closed = 'True'
+                condition = "day != ''"
+            }else{
+                is_closed = 'False'
+                condition = "day != '' && from_hour != '' && to_hour != ''"
+            }
+            if(eval(condition)){
+                $.ajax({
+                     type: 'POST',
+                     url: url,
+                     data: {
+                        'day': day,
+                        'from_hour': from_hour,
+                        'to_hour': to_hour,
+                        'is_closed': is_closed,
+                        'csrfmiddlewaretoken': csrf_token,
+                     },
+                     success: function(response){
+                        if(response.status == 'success'){
+                            if(response.is_closed == 'Closed'){
+                                html = '<tr id="hour-'+response.id+'"><td><b>'+response.day+'</b></td><td>Closed</td><td><a href="" class="remove_hour" data-url="/accounts/vendor/opening-hours/remove/'+response.id+'/">Remove</a></td></tr>';
+                            }else{
+                                html = '<tr id="hour-'+response.id+'"><td><b>'+response.day+'</b></td><td>'+response.from_hour+' - '+response.to_hour+'</td><td><a href="" class="remove_hour" data-url="/accounts/vendor/opening-hours/remove/'+response.id+'/">Remove</a></td></tr>';
+                            }
+                            $(".opening_hours").append(html)
+                            document.getElementById('opening_hours').reset();
+                        }else{
+                             swal(response.message,'',"error")
+                        }
+                     }
+                })
+            }else{
+                swal('please fill all fields','','info')
+            }
+        });
+
+        // $('.remove_hour').on('click', function(e){
+        //     e.preventDefault();
+        //     url = $(this).attr('data-url');
+            
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         success: function(response){
+        //             if(response.status == 'success'){
+        //                 document.getElementById('hour-'+response.id).remove()
+        //             }
+        //         }
+        //     })
+        // })
+
+        $(document).on('click','.remove_hour', function(e){
+            e.preventDefault();
+            url = $(this).attr('data-url');
+            
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function(response){
+                    if(response.status == 'success'){
+                        document.getElementById('hour-'+response.id).remove()
+                    }
+                }
+            })
+        })
+
+    </script>
+    {% endblock %}
+    

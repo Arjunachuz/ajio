@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}"></script>
+    <script>
+        function createLink() {
+          var lat = document.getElementById("lat").value;
+          var lng = document.getElementById("lng").value;
+          var link = "https://maps.google.com/?q=" + lat + "," + lng;
+        //   document.getElementById("locationLink").href = link;
+        //   $('#id_location').val(link);
+          document.getElementById("id_location").value = link;
+        }
+      </script>
+
+</head>
+<body>
+    <h1>Create Order</h1>
+    <form method="post" enctype="multipart/form-data" id="orderform" data-models-url="{% url 'ajax_load_models' %}">
+      {% csrf_token %}
+      <ul>
+         <label for="">Vehicle</label><br>
+         {{form.vehicle}}
+         <br>
+         <label for="">Type</label><br>
+         {{form.type}}
+         <br>
+         <label for="">Model</label><br>
+         {{form.model}}
+         <br>
+         <label for="">Defect</label><br>
+         {{form.defect}}
+         <br>
+         <label for="">Description</label><br>
+         {{form.description}}
+         <br>
+         <label for="">Phone Number</label><br>
+         {{form.u_phone_number}}
+         <br>
+         <label for="">Latitude</label><br>
+         {{form.latitude}}
+         <br>
+         <label for="">Longitude</label><br>
+         {{form.longitude}}
+         <br>
+        
+      </ul>
+      <!-- <input type="text" id="lat" placeholder="Enter your Current Latitude">
+      <input type="text" id="lng" placeholder="Enter your Current Longitude">
+      <button type="button" onclick="createLink()">Create link</button> -->
+      <!-- <br>
+      <br> -->
+      <input type="file" name="images" multiple>
+      <br>
+      <br>
+      <br>
+      <input type="submit" value="Create Order">
+    </form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+    <script>
+      $("#id_vehicle").change(function(){
+        const url = $("#orderform").attr("data-models-url");
+        const vehicleId = $(this).val();
+        console.log('url',url)
+
+        $.ajax({
+          url: url,
+          data: {
+            'vehicle_id': vehicleId
+          },
+          success: function (data) {
+            $("#id_model").html(data);
+          }
+        })
+      })
+    </script>
+</body>
+</html>
