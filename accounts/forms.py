@@ -44,7 +44,7 @@ class OrderForm(forms.ModelForm):
         elif self.instance.pk:
             self.fields['model'].queryset = self.instance.vehicle.model_set.order_by('name')        
 
-# class OrderForm_images(forms.ModelForm):
-#     class Meta:
-#         model = Order_images
-#         fields = ["images"]        
+class UserInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone_number']            

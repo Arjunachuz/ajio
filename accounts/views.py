@@ -1,10 +1,9 @@
-from django.shortcuts import render,redirect
-from django.http import HttpResponse
-from .forms import UserForm,OrderForm
+from django.shortcuts import render,redirect,get_object_or_404
+from .forms import UserForm,OrderForm,UserProfileForm, UserInfoForm
 from vendor.forms import VendorForm
 from .models import User,UserProfile
 from django.contrib import messages,auth
-from .utils import detect_user,send_verification_email
+from .utils import detect_user,send_verification_email,send_service_email
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
@@ -156,7 +155,7 @@ def myAccount(request):
 @user_passes_test(check_role_user)
 def userHome(request):
     user = request.user
-    orders = Orders.objects.filter(Q(user=user,status='ACCEPTED',is_seen=False) | Q(user=user,status='DECLINED',is_seen=False))
+    orders = Orders.objects.filter(user=user,is_seen=False)
     print(user)
     return render(request,'accounts/userHome.html',{'orders':orders})
 
@@ -312,6 +311,7 @@ def order(request,vendor_id):
             order = form.save(commit=False)
             order.user = user
             order.vendor = vendor
+            order.service = 'ROAD'
             order.save()
 
             for image in images:
@@ -327,6 +327,48 @@ def order(request,vendor_id):
 
     form = OrderForm()
     return render(request, 'accounts/order.html',{'form':form,'vendor':vendor})
+
+def service(request, vendor_id):
+    vendor = Vendor.objects.get(id=vendor_id)  
+    return render(request, 'accounts/service.html',{'vendor':vendor}) 
+
+def home_service(request,vendor_id):
+    print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+    user = request.user
+    print(user)
+    vendor = Vendor.objects.get(id=vendor_id)
+    if request.method == 'POST':
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
+        print('inside request')
+        form = OrderForm(request.POST)
+        images = request.FILES.getlist('images')
+        date = request.POST.get('myDate')
+        time = request.POST.get('myTime')
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',date)
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',time)
+        if form.is_valid():
+            print('form is valid')
+            order = form.save(commit=False)
+            order.user = user
+            order.vendor = vendor
+            order.service = 'HOME'
+            order.date = date
+            order.time = time
+            order.save()
+
+            for image in images:
+                order_images = Order_images.objects.create(
+                    order = order,
+                    images = image
+                )
+                order_images.save()
+            return redirect('myAccount')    
+            
+        else:
+            print(form.errors)
+
+    form = OrderForm()
+    return render(request, 'accounts/home_service.html',{'form':form,'vendor':vendor})
 
 def load_models(request):
     vehicle_id = request.GET.get('vehicle_id')
@@ -345,18 +387,18 @@ def accept(request,order_id):
     print(user)
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number')
-        eta = request.POST.get('eta')
-
+        if not order.date:
+            eta = request.POST.get('eta')
+            order.eta = eta
         order.v_phone_number = phone_number
-        order.eta = eta
         order.status = 'ACCEPTED'
         order.save()
 
         mail_subject = 'Your order has been Accepted.'
         email_template = 'accounts/emails/order_accepted_email.html'
-        send_verification_email(request,user, mail_subject, email_template) 
+        send_service_email(request,user, mail_subject, email_template,order_id) 
 
-        return redirect('order_bill',order_id=order_id)
+        return redirect('myAccount')
     return render(request, 'accounts/order_accept.html',{'order':order}) 
 
 def order_bill(requset,order_id=None):
@@ -387,14 +429,15 @@ def decline(request,order_id):
 
         mail_subject = 'Sorry the order has been Declined.'
         email_template = 'accounts/emails/order_declined_email.html'
-        send_verification_email(request,user, mail_subject, email_template) 
+        send_service_email(request,user, mail_subject, email_template,order_id) 
 
         return redirect('myAccount')
 
     return render(request, 'accounts/order_decline.html',{'order':order})    
 
 
-def end_page(request, uidb64, token):
+def end_page(request, uidb64, order_id):
+    print('ENDPAGEEEEEEEEEEEEEEEEEEEEEE')
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         print(uid)
@@ -404,22 +447,52 @@ def end_page(request, uidb64, token):
         user = None
 
     if user is not None:
-            order = Orders.objects.filter(Q(user=user,status='ACCEPTED') | Q(user=user,status='DECLINED')).first()  
-            # order2 = Orders.objects.filter(user=user,status='DECLINED').first()  
+            print('pppppppppppppppppppppppppp')
+            order = Orders.objects.get(id=order_id) 
             print('kkkkkkkkkkkkkkkkkkkkkkkkkkkk')
             print(order)
-            if order.status == 'ACCEPTED':
-                order.status = 'PENDING' 
-                order.is_seen = True
-                order.save()
-                print(order.status)    
+            print(order.status)
+            if order.status:
+                if order.status == 'ACCEPTED':
+                    print('yesssss')
+                    order.status = 'PENDING' 
+                    order.is_seen = True
+                    order.save()
+                    print(order.status)    
+                else:    
+                    order.is_seen = True
+                    order.save()    
                 return render(request, 'accounts/end_page.html',{'order':order}) 
-            order.is_seen = True
-            order.save()    
-            return render(request, 'accounts/end_page.html',{'order':order}) 
-            # elif order2:
-            #     return render(request, 'accounts/end_page.html',{'order2':order2})    
-    return redirect('myAccount')        
+            else:
+                return render(request, 'accounts/end_page.html')       
+    return redirect('myAccount')  
+
+@login_required(login_url='login')
+def u_profile(request):
+    profile = get_object_or_404(UserProfile, user=request.user)
+
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        user_form = UserInfoForm(request.POST, instance=request.user)
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
+            user_form.save()
+            messages.success(request, 'Profile Updated')
+            return redirect('u_profile')
+        else:
+            print(profile_form.errors)    
+            print(user_form.errors)    
+    else:
+        profile_form = UserProfileForm(instance=profile)
+        user_form = UserInfoForm(instance=request.user)
+
+    context = {
+        'profile_form':profile_form,
+        'user_form': user_form,
+        'profile':profile,
+
+    }
+    return render(request, 'user/profile.html', context)          
 
 
 

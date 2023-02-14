@@ -4,7 +4,7 @@ Hi {{user.first_name}},
 
 
 Congratsz your order is Accepted. Please click on the below link.
-http://{{domain}}{% url 'end_page' uidb64=uid token=token %}
+http://{{domain}}{% url 'end_page' uidb64=uid order_id=order_id %}
 
 
 {% endautoescape %}

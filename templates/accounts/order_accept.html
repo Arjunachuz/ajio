@@ -19,10 +19,12 @@
           <label for="phone_number">Phone Number</label>
           <input type="text" class="form-control" id="phone_number" name="phone_number">
         </div>
+        {% if not order.date %}
         <div class="form-group">
           <label for="eta">Estimated Time of Arrival</label>
           <input type="text" class="form-control" id="eta" name="eta">
         </div>
+        {% endif %}
         <div class="form-group text-center">
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>

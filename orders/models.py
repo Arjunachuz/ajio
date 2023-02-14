@@ -30,7 +30,10 @@ class Types(models.Model):
         return self.name
 
 class Orders(models.Model):
-
+    TYPE = [
+        ('ROAD', 'ROAD'),
+        ('HOME', 'HOME'),
+    ]
     STATUS_CHOICES = [
         ('NEW', 'NEW'),
         ('ACCEPTED', 'ACCEPTED'),
@@ -40,6 +43,7 @@ class Orders(models.Model):
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, blank=True, null=True)
+    service = models.CharField(max_length=10, choices=TYPE, blank=True)
     u_phone_number = models.CharField(max_length=12, blank=True)
     v_phone_number = models.CharField(max_length=12, blank=True)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, blank=True, null=True)
@@ -54,6 +58,8 @@ class Orders(models.Model):
     price = models.CharField(max_length=100, blank=True, null=True)
     msg = models.TextField(blank=True, null=True)
     is_seen = models.BooleanField(default=False)
+    date = models.DateField(blank=True,null=True)
+    time = models.TimeField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -66,4 +72,5 @@ class Order_images(models.Model):
 
     def __str__(self):
         return self.order.description       
+   
                        

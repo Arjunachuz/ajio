@@ -20,6 +20,9 @@
       <div class="row">
         <div class="col-md-6">
           <p>
+            <strong>Service:</strong> {{ order.service }}
+          </p>
+          <p>
             <strong>Vehicle:</strong> {{ order.vehicle }}
           </p>
           <p>
@@ -35,8 +38,13 @@
             <strong>Description:</strong> {{ order.description }}
           </p>
           <p>
-            <strong>Description:</strong> {{ order.u_phone_number }}
+            <strong>Customer NO:</strong> {{ order.u_phone_number }}
           </p>
+          {% if order.date %}
+          <p>
+            <strong>Requested Date and Time:</strong> {{ order.date }} | {{ order.time }}
+          </p>
+          {% endif %}
           <p>
             <strong>Location:</strong>
           </p>

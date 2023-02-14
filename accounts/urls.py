@@ -26,8 +26,11 @@ urlpatterns = [
 
     path('search/',views.search, name='search'),
     path('search_current/',views.search_current, name='search_current'),
+
+    path('service/<int:vendor_id>/',views.service, name='service'),
     
     path('order/<int:vendor_id>/',views.order, name='order'),
+    path('home_service/<int:vendor_id>/',views.home_service, name='home_service'),
     
     path('ajax/load-models/',views.load_models, name='ajax_load_models'),
 
@@ -38,9 +41,14 @@ urlpatterns = [
     path('accept/<int:order_id>/',views.accept, name='accept'),
     path('decline/<int:order_id>/',views.decline, name='decline'),
 
-    path('end_page/<uidb64>/<token>/',views.end_page, name='end_page'),
+    path('end_page/<uidb64>/<order_id>/',views.end_page, name='end_page'),
 
 
     path('vendor/',include('vendor.urls')),
+
+
+
+
+    path('u_profile/',views.u_profile, name='u_profile'),
 
 ]

@@ -29,6 +29,21 @@ def send_verification_email(request,user, mail_subject, email_template):
     print(user.email)
     mail = EmailMessage(mail_subject,message,to=[to_email])
     mail.content_subtype = 'html'
+    mail.send()     
+
+def send_service_email(request,user, mail_subject, email_template,order_id):
+    current_site = get_current_site(request)
+    mail_subject = mail_subject
+    message = render_to_string(email_template,{
+        'user': user,
+        'domain': current_site,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'order_id': order_id,
+    }) 
+    to_email = user.email
+    print(user.email)
+    mail = EmailMessage(mail_subject,message,to=[to_email])
+    mail.content_subtype = 'html'
     mail.send()       
 
    

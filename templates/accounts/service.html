@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #0b3d91;
+        color: #fff;
+        padding: 20px;
+      }
+      .service-box {
+        background-color: #fff;
+        border-radius: 25px;
+        text-align: center;
+        margin: 20px 0;
+        padding: 40px;
+        position: relative;
+      }
+      .service-box h2 {
+        color: #000;
+        margin-bottom: 20px;
+      }
+      .service-box a {
+        display: inline-block;
+        position: absolute;
+        bottom: 1px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .service-box a i {
+        display: inline-block;
+        background-image: url("https://i.pinimg.com/736x/1b/a2/70/1ba270fefa7b285a93d8ce547d97f77e.jpg");
+        background-repeat: no-repeat;
+        width: 50px;
+        height: 50px;
+        background-size: contain;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="service-box">
+            <h2>On Road Service</h2>
+            <p style="color: black;">We offer on road services to get your vehicle back on track as soon as possible.</p>
+            <a href="{% url 'order' vendor.id %}">
+              <i></i>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="service-box">
+            <h2>On Home Service</h2>
+            <p style="color: black;">We also offer on home services for your convenience and comfort.</p>
+            <a href="{% url 'home_service' vendor.id %}">
+              <i></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

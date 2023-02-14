@@ -21,22 +21,35 @@ class Vendor(models.Model):
         today = today_date.isoweekday()
 
         current_opening_hours = OpeningHour.objects.filter(vendor=self,day=today)
-        print(current_opening_hours)
         now  =  datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        if len(current_opening_hours) > 2:
-            is_open = None
-            for i in current_opening_hours:
-                start = str(datetime.strptime(i.from_hour, "%I:%M %p").time())
-                end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
-                if current_time > start and current_time < end:
-                    is_open = True
-                    break
-                else:
-                    is_open = False
+        if current_opening_hours:
+            print(current_opening_hours)
+            if current_opening_hours[0].to_hour:
+                is_open = None
+                for i in current_opening_hours:
+                    start = str(datetime.strptime(i.from_hour, "%I:%M %p").time())
+                    end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
+                    if current_time > start and current_time < end:
+                        is_open = True
+                        break
+                    else:
+                        is_open = False    
+            else:
+                is_open = False            
         else:
             is_open = False            
-        return is_open        
+        return is_open 
+
+    # @property
+    # def vendor_availbilty(self):
+    #     oh  = OpeningHour.objects.filter(vendor=self)
+    #     # data = [(data.get_day_display(),[data.from_hour, data.to_hour]) for data in oh]
+    #     print(oh)
+    #     # for i in data:
+    #         # print(i)
+    #     return oh[0]
+
 DAYS = [
     (1,("Monday")),
     (2,("Tuesday")),
@@ -47,7 +60,9 @@ DAYS = [
     (7,("Sunday")),
 ]
 
-HOUR_OF_DAY_24 = [(time(h,m).strftime('%I:%M %p'), time(h,m).strftime('%I:%M %p')) for h in range(0,24) for m in (0,30)]  
+HOUR_OF_DAY_24 = [(time(h,m).strftime('%I:%M %p'), time(h,m).strftime('%I:%M %p')) for h in range(0,24) for m in (0,30)] 
+# class Slot(models.Model):
+#     SLOT_DATA =  
 
 class OpeningHour(models.Model):
     vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE)        
@@ -61,4 +76,6 @@ class OpeningHour(models.Model):
         unique_together = ('vendor','day', 'from_hour', 'to_hour') 
 
     def __str__(self):
-        return self.get_day_display()     
+        return self.get_day_display() 
+
+   

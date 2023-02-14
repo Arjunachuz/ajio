@@ -18,7 +18,7 @@
     <thead>
       <tr>
         <th>Created Date</th>
-        <th>Type</th>
+        <th>Service</th>
         <th>Model</th>
         <th>Defect</th>
         <th></th>
@@ -28,7 +28,7 @@
       {% for order in orders %}
       <tr>
         <td>{{ order.created_at }}</td>
-        <td>{{ order.type.name }}</td>
+        <td>{{ order.service }}</td>
         <td>{{ order.model.name }}</td>
         <td>{{ order.defect.name }}</td>
         <td><a href="{% url 'order_detail' order.id %}" class="btn btn-info">View</a></td>
