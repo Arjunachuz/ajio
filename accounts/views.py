@@ -14,6 +14,7 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from orders.models import Orders,Order_images,Models
 from django.db.models import Q
+import datetime
 
 # Create your views here.
 
@@ -172,11 +173,59 @@ def vendorHome(request):
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
 def vendor_dashboard(request):
-    return render(request,'accounts/vendor_dashboard.html')   
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Orders.objects.filter(vendor=vendor).order_by('-created_at')
+    recent_orders = orders[:5]
+    
+    current_month = datetime.datetime.now().month
+    current_month_orders = orders.filter(created_at__month=current_month)
+    current_month_revenue = 0
+    for i in current_month_orders:
+        if i.price:
+            current_month_revenue += int(i.price)    
+
+    total_revenue = 0
+    for i in orders:
+        if i.price:
+           total_revenue += int(i.price)
+
+    context = {
+        'recent_orders':recent_orders,
+        'orders_count':orders.count(),
+        'total_revenue':total_revenue,
+        'current_month_revenue':current_month_revenue,
+    }    
+
+    return render(request,'accounts/vendor_dashboard.html', context)   
 
 @login_required(login_url ='login')
 def user_dashboard(request):
-    return render(request,'accounts/user_dashboard.html')        
+    orders = Orders.objects.filter(user=request.user).order_by('-created_at')
+    recent_orders = orders[:5]
+    context = {'orders':orders,
+               'recent_orders':recent_orders,
+               'orders_count':orders.count(),
+              }
+    return render(request,'accounts/user_dashboard.html',context)      
+
+def my_orders(request):
+    orders = Orders.objects.filter(user=request.user).order_by('-created_at')
+    context = {'orders':orders}
+    return render(request, 'user/my_orders.html', context)     
+
+def v_orders(request):
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Orders.objects.filter(vendor=vendor).order_by('-created_at')
+    context = {'orders':orders}
+    return render(request, 'vendor/my_orders.html', context)      
+
+def my_orders_detail(request, order_id):
+    order = Orders.objects.get(id=order_id)
+    return render(request, 'user/my_orders_detail.html',{'order':order})   
+
+def v_orders_detail(request, order_id):
+    order = Orders.objects.get(id=order_id)
+    return render(request, 'vendor/my_orders_detail.html',{'order':order})    
 
 def forgot_password(request):
     if request.method == 'POST':

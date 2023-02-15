@@ -20,7 +20,12 @@ urlpatterns = [
     path('vendorHome/',views.vendorHome, name='vendorHome'),
 
     path('vendor_dashboard/',views.vendor_dashboard, name='vendor_dashboard'),
+    path('v_orders/',views.v_orders, name='v_orders'),
+    path('v_orders_detail/<int:order_id>',views.v_orders_detail, name='v_orders_detail'),
+
     path('user_dashboard/',views.user_dashboard, name='user_dashboard'),
+    path('my_orders/',views.my_orders, name='u_my_orders'),
+    path('my_orders_detail/<int:order_id>',views.my_orders_detail, name='u_my_orders_detail'),
 
     path('on_road/',views.on_road, name='on_road'),
 

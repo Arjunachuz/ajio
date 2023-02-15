@@ -70,7 +70,7 @@
                                             </div>
                                             <div class="post-title">
                                                 <h5>
-                                                    <a href="listing-detail.html">{{vendor.vendor_name}}</a>
+                                                    <a href="">{{vendor.vendor_name}}</a>
                                                     <!-- <span class="sponsored text-color">Sponsored</span> -->
                                                 </h5>
                                             </div>
@@ -80,10 +80,12 @@
                                             {% endif %}    
                                             
                                         </div>
+                                        {% if vendor.is_open %}
                                         <div class="list-option">
 
                                             <a href="{% url 'service' vendor.id %}" class="viewmenu-btn text-color">Try Out</a>
                                         </div>
+                                        {% endif %}
                                     </li>
                                 </ul>
                                 {% endfor %}
