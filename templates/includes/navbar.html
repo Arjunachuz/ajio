@@ -22,6 +22,9 @@
                             {% elif 'registerUser' in request.path  %}
 							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerVendor' %}">
 								Register Workshop</a>
+                            {% elif 'login' in request.path  %}
+							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerUser' %}">
+								Register</a>
 						    {% else %}		
 							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'logout' %}">
 								Logout</a>

@@ -16,7 +16,7 @@
                             <hr>
                             <br>
                             <div id="restaurant-sets-holder">
-                                <form class="form-fields-set foodbakery-dev-restaurant-form" method="post" action="{% url 'registerVendor ' %}" enctype="multipart/form-data">
+                                <form class="form-fields-set foodbakery-dev-restaurant-form" method="post" action="{% url 'registerVendor' %}" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <ul class="register-add-restaurant-tab-container restaurant-information-tab-container">
                                         <li>
@@ -37,12 +37,12 @@
                                                                 </div>
                                                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                     <div class="field-holder">
-                                                                        <label>Workshop Name</label>{{v_form.vendor_name}}
+                                                                        <label>Workshop License</label>{{v_form.vendor_license}}
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                     <div class="field-holder">
-                                                                        <label>Workshop License</label>{{v_form.vendor_license}}
+                                                                        <label>Workshop Name</label>{{v_form.vendor_name}}
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
