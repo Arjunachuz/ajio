@@ -132,7 +132,7 @@ def login(request):
         else:
             messages.error(request, 'Invalid Credentials')
             return redirect('login')    
-    return render(request, 'login.html') 
+    return render(request, 'accounts/login.html') 
 
 
 def logout(request):
