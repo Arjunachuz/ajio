@@ -59,7 +59,7 @@ def registerUser(request):
     context = {
         'form':form,
     }
-    return render(request, 'accounts/v_r.html', context)
+    return render(request, 'accounts/registerUser.html', context)
 
 def registerVendor(request):
     if request.method == 'POST':
