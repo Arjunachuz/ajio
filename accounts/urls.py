@@ -52,8 +52,10 @@ urlpatterns = [
     path('vendor/',include('vendor.urls')),
 
 
-
+   
 
     path('u_profile/',views.u_profile, name='u_profile'),
+    path('admin/',views.admin_login, name='admin_login'),
+    path('admin_home/',views.admin_dashboard, name='admin_dashboard'),
 
 ]

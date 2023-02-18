@@ -33,9 +33,6 @@ def check_role_user(user):
         raise PermissionDenied    
 
 def registerUser(request):
-    if request.user.is_authenticated:
-        messages.warning(request,'You already logged in !')
-        return redirect('userHome')
     if request.method == 'POST':
         print(request.POST)
         form = UserForm(request.POST)
@@ -62,12 +59,9 @@ def registerUser(request):
     context = {
         'form':form,
     }
-    return render(request, 'accounts/registerUser.html', context)
+    return render(request, 'accounts/v_r.html', context)
 
 def registerVendor(request):
-    if request.user.is_authenticated:
-        messages.warning(request,'You already logged in !')
-        return redirect('vendorHome')
     if request.method == 'POST':
         form = UserForm(request.POST)
         v_form = VendorForm(request.POST, request.FILES)
@@ -157,8 +151,9 @@ def myAccount(request):
 def userHome(request):
     user = request.user
     orders = Orders.objects.filter(user=user,is_seen=False)
+    vendors = Vendor.objects.all()[:8]
     print(user)
-    return render(request,'accounts/userHome.html',{'orders':orders})
+    return render(request,'home.html',{'orders':orders,'vendors':vendors})
 
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
@@ -541,7 +536,25 @@ def u_profile(request):
         'profile':profile,
 
     }
-    return render(request, 'user/profile.html', context)          
+    return render(request, 'user/profile.html', context)      
+
+def admin_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = auth.authenticate(request, email=email, password=password, is_admin=True)
+        if user is not None and user.is_admin:
+            auth.login(request, user)
+            return redirect('admin_dashboard')
+        else:
+            messages.error(request, 'Invalid email or password')
+    return render(request, 'accounts/admin_login.html')    
+
+def admin_dashboard(request):
+    if request.user.is_authenticated and request.user.is_admin:
+
+       return render(request, 'accounts/admin_dashboard.html') 
+    return redirect('admin_login')          
 
 
 

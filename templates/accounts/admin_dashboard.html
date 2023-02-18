@@ -1,0 +1,108 @@
+{% extends "accounts/admin_base.html" %}
+{% load static%}
+{% block content %}
+
+<div class="p-0 m-0">
+ <!-- <nav  class=" navbar navbar-light navbar-fixed-top text-center" style="background-color:#E6E6E3; z-index:-1; height:7rem;">
+    <span style="font-size:50px; color:black; padding-left:525px;">STYLAZA</span>
+</nav> -->
+      </div>
+
+<div class="  ml-5"><h2 class="text-dark font-weight-bold">Sales Report</h2></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+
+<!-- partial -->
+<div class="main-panel mx-5">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-4 stretch-card grid-margin my-5 text-center ">
+                <div class="card  card-img-holder text-white">
+                    <div class="card-body" >
+
+                                               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"fill="currentColor" class="bi bi-currency-dollar mb-2" viewBox="0 0 16 16">
+                          <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"/>
+                        </svg>
+                                                <h4 class=" mb-2 h1 text-dark" style="font-weight: 600;">Total Income
+                        </h4>
+                        <h2 class="mb-2 text-dark">${{income}}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 stretch-card grid-margin my-5 text-center ">
+                <div class="card  card-img-holder text-white">
+                    <div class="card-body" >
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="blue" class="bi bi-boxes mb-2" viewBox="0 0 16 16">
+  <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
+</svg>
+                        <h4 class=" mb-2 h1 text-dark" style="font-weight: 600;">Total Products
+                        </h4>
+                        <h2 class="mb-2 text-dark">{{product_count}}</h2>
+                    </div>
+                </div>
+            </div>
+             <div class="col-md-4 stretch-card grid-margin my-5 text-center ">
+                <div class="card  card-img-holder text-white">
+                    <div class="card-body" >
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="green" class="bi bi-bag-check-fill mb-2" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zm-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+</svg>
+                        <h4 class=" mb-2 h1 text-dark" style="font-weight: 600;">Total Orders
+                        </h4>
+                        <h2 class="mb-2 text-dark">{{order_count}}</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>     <!-- container-scroller -->
+<!-- plugins:js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<canvas id="chart"></canvas>
+
+
+<script>let ctx = document.getElementById("chart").getContext("2d");
+let chart = new Chart(ctx, {
+  type: "pie",
+  data: {
+   labels: ["New", "Pending", "Accepted", "Cancelled","Completed"],
+   datasets: [
+    {
+      label: "Status of Order",
+      borderColor: "#000000",
+      backgroundColor: [
+						'rgb(255, 99, 132)',
+						'rgb(255, 159, 64)',
+						'rgb(255, 205, 86)',
+						'rgb(75, 192, 192)',
+						'rgb(54, 162, 235)',
+						// 'rgb(153, 102, 255)',
+						// 'rgb(201, 203, 207)'
+					],
+					hoverOffset: 4,
+
+
+      data: {{data1}}
+    }
+   ]
+  },
+  options: {
+   title: {
+    text: "Status of Orders",
+    display: true
+   }
+  }
+});
+
+</script>
+
+
+
+
+
+{% endblock content %}

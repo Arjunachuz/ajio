@@ -1,109 +1,88 @@
 {% extends 'accounts/base.html' %}
 {% load static %}
 {% block content %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
-        
-<h1>On Road </h1>
-<form action="{% url 'search' %}" method="GET">
-<div class="w-100% h-52 bg-blue-500 flex flex-row gap-40 justify-center items-center">
-    
-    <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
-        <input class="text-gray text-center w-4/5" type="text" placeholder="Search by Name..." name="keyword">
-    </div>
-    <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
-        <input class="text-gray text-center w-4/5" type="text" id="id_address" name="address" placeholder="Search by Place...">
-        <input type="hidden" name="lat" value="" id="id_latitude">
-        <input type="hidden" name="lng" value="" id="id_longititude">
-    </div>
-    
-        <button class="btn btn-danger" type="submit">Search</button>
-    
-    <!-- <div class="bg-white h-16 w-1/4 flex flex-col justify-center items-center rounded-full">
-        <input class="text-gray text-center w-4/5" type="text" id="location" value="" placeholder="Give current location"><i class="icon-target5  cursor-pointer" onclick="getLocation()"></i>
-    </div> -->
-  
-    </form>
-
-
-</div>
-<div class="main-section">
-    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 10px;margin-bottom: 0px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="row">
-                        <aside class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-                            
-                        </aside>
-                        <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
-                            <div class="listing-sorting-holder">
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <h4>{{vendor_count}}  Workshops found</h4>
+{% if vendor_count != 0 %}
+    <div class="main-section">
+        <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 10px;margin-bottom: 0px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+                            <aside class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                
+                            </aside>
+                            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                                <div class="listing-sorting-holder">
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h4>{{vendor_count}}  Workshops found</h4>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="listing simple">
-                                {% for vendor in vendors %}
-                                <ul>
-                                    <li>
-                                        <div class="img-holder">
-                                            <figure>
-                                                {% if vendor.user_profile.profile_picture %}
-                                                <a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="img-list wp-post-image" alt=""></a>
+                                <div class="listing simple">
+                                    {% for vendor in vendors %}
+                                    <ul>
+                                        <li>
+                                            <div class="img-holder">
+                                                <figure>
+                                                    {% if vendor.user_profile.profile_picture %}
+                                                    <a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="img-list wp-post-image" alt=""></a>
+                                                    {% else %}
+                                                    <a href="#"><img src="{% static 'images/vendor icon.jpg' %}" class="img-list wp-post-image" alt=""></a>
+                                                    {% endif %}
+                                                </figure>
+                                                {% if vendor.is_open %}
+                                                <span class="restaurant-status open"><em class="bookmarkRibbon"></em>Open</span>
                                                 {% else %}
-                                                <a href="#"><img src="{% static 'images/vendor icon.jpg' %}" class="img-list wp-post-image" alt=""></a>
+                                                <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span>
                                                 {% endif %}
-                                            </figure>
-                                            {% if vendor.is_open %}
-                                            <span class="restaurant-status open"><em class="bookmarkRibbon"></em>Open</span>
-                                            {% else %}
-                                            <span class="restaurant-status close"><em class="bookmarkRibbon"></em>Close</span>
-                                            {% endif %}
-                                        </div>
-                                        <div class="text-holder">
-                                            <div class="list-rating">
-                                                <div class="">
-                                                    <!-- <span class="rating-box" style="width: 100%;"></span> -->
+                                            </div>
+                                            <div class="text-holder">
+                                                <div class="list-rating">
+                                                    <div class="">
+                                                    </div>
                                                 </div>
-                                                <!-- <span class="">(1)</span> -->
+                                                <div class="post-title">
+                                                    <h5>
+                                                        <a href="">{{vendor.vendor_name}}</a>
+                                                    </h5>
+                                                </div>
+                                                <span class="">{{vendor.user_profile.address}}</span><br>
+                                                {% if vendor.kms %}
+                                                    <span><b>{{vendor.kms}}, km</b> away from {{source_location}}</span>
+                                                {% endif %}    
+                                                
                                             </div>
-                                            <div class="post-title">
-                                                <h5>
-                                                    <a href="">{{vendor.vendor_name}}</a>
-                                                    <!-- <span class="sponsored text-color">Sponsored</span> -->
-                                                </h5>
-                                            </div>
-                                            <span class="">{{vendor.user_profile.address}}</span><br>
-                                            {% if vendor.kms %}
-                                                <span><b>{{vendor.kms}}, km</b> away from {{source_location}}</span>
-                                            {% endif %}    
-                                            
-                                        </div>
-                                        {% if vendor.is_open %}
-                                        <div class="list-option">
+                                            {% if vendor.is_open %}
+                                            <div class="list-option">
 
-                                            <a href="{% url 'service' vendor.id %}" class="viewmenu-btn text-color">Try Out</a>
-                                        </div>
-                                        {% endif %}
-                                    </li>
-                                </ul>
-                                {% endfor %}
+                                                <a href="{% url 'service' vendor.id %}" class="viewmenu-btn text-color">Try Out</a>
+                                            </div>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                    {% endfor %}
+                                </div>        
                             </div>
-                            
                         </div>
-                        <!-- <div class="section-sidebar col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                            <div class="message-box" style="background-color: #fa9918;">
-                                <strong>I'm not Listed!</strong><span>is your restaurant or
-                                    business not
-                                    listed on over site</span>
-                                <a href="#" class="request-btn">Add Your business!</a>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+{% else %}
+	<!-- <style>
+		body {
+			background-image: url('https://wallpaperaccess.com/full/676563.jpg');
+			background-size: cover;
+			height: 100vh;
+		}
+	</style> -->
+  <div style="background-color: rgb(255, 255, 255); width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h1 style="text-align: center; margin-bottom: 20px;">NO RESULTS FOUND !</h1>
+    <img src="https://st.depositphotos.com/1007989/1634/i/600/depositphotos_16348943-stock-photo-flat-tire-mascot.jpg" alt="Flat tire mascot" style="max-width: 100%; max-height: 80%;">
+    <a href="{% url 'myAccount' %}"><button style="margin-top: 50px;" class="btn btn-danger btn-lg">Back</button></a>
+  </div>
+{% endif %}
+
 {% endblock %}

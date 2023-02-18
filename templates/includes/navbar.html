@@ -1,0 +1,35 @@
+{% load static %}
+<div class="wrapper">
+	<!-- Header Start -->
+	<header id="header">
+		<div class="main-header">
+			<div class="container">
+				<div style="height: 80px;margin-top: 15px;" class="row">
+					<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+						<div class="logo">
+							<figure>
+								<a href="" class="light-logo">
+									<img style="width:150px; margin-left: 90px;" src="{% static 'images/AJI.png' %}" alt="FoodBakery">
+								</a>
+							</figure>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+						<div class="login-option">
+							{% if 'registerVendor' in request.path %}
+							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerUser' %}">
+								Register User</a> 
+                            {% elif 'registerUser' in request.path  %}
+							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerVendor' %}">
+								Register Workshop</a>
+						    {% else %}		
+							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'logout' %}">
+								Logout</a>
+						    {% endif %}		
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- Header End -->

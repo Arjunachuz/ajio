@@ -1,0 +1,90 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+  	<title>Sidebar 02</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{% static 'admin/css/style.css'%}">
+  </head>
+  <body>
+  <!-- Just an image -->
+
+
+		<div class="wrapper d-flex align-items-stretch ">
+			<nav id="sidebar" class="border border-dark" style="background-color:rgb(4, 5, 46)">
+				<div class="custom-menu" >
+					<button type="button" id="sidebarCollapse" class="btn btn-light mt-5 mx-4" >
+	          <i class="fa fa-bars"></i>
+	          <span class="sr-only">Toggle Menu</span>
+	        </button>
+        </div>
+				<div class="p-5 pt-5 h-5 text-center">
+
+                    <img src="data:image/png;base64,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" alt="Admin" class="rounded-circle border border-dark " width="50">
+					<h6 style='margin-top: 3px;'class="text-white">Admin</h6>
+					<a href=""><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="bi bi-power text-white" viewBox="0 0 16 16">
+  <path d="M7.5 1v7h1V1h-1z"/>
+  <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"/>
+</svg></a>
+				</div>
+				<div class="p-4 pt-5">
+
+	        <ul class="list-unstyled components mb-5">
+	          <li>
+				    <a href="">DASHBOARD</a>
+			  </li>
+			  <li>
+				<a href="">SALES REPORT</a>
+		      </li>
+              <li>
+	              <a href="">USER</a>
+	          </li>
+	          <li>
+              <a href="">PRODUCTS</a>
+	          <li>
+              <a href="">CATEGORY</a>
+	          </li>
+	          <li>
+              <a href="">BRAND</a>
+	          </li>
+				<li>
+              <a href="">ORDERS</a>
+	          </li>
+				<li>
+              <a href="">COUPONS</a>
+	          </li>
+				<li>
+              <a href="">OFFERS</a>
+	          </li>
+				<!-- <li>
+              <a href="#">SALES REPORT</a>
+	          </li> -->
+	        </ul>
+				</div>
+    	</nav>
+
+
+
+<div id="content" class="">
+
+	<div id="" class="p-4 p-md-5 pt-5">
+{% block content %}
+
+	{% endblock content %}
+</div>
+		</div>
+
+
+    
+		<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="{% static 'admin/js/jquery.min.js'%}"></script>
+    <script src="{% static 'admin/js/popper.js'%}"></script>
+    <script src="{% static 'admin/js/bootstrap.min.js'%}"></script>
+    <script src="{% static 'admin/js/main.js'%}"></script>
+  </body>
+</html>

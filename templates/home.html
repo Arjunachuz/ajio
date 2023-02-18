@@ -1,8 +1,96 @@
-<div style="display: inline;">
-    {% if messages %}
-    {% for message in messages %}
-       <h4 style="text-align: center; padding-top: 50px; color: green;">{{message}}</h4></div>
-    {% endfor %}
-    {% endif %}
-<h3>Loading the home page</h3>
-<a href="{% url 'logout' %}"><button type="submit">Logout</button></a>
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
+	<!-- Main Section Start -->
+	<div class="main-section">
+		<!-- Home Pages Elements Strat -->
+		<!-- Main Search Start -->
+		<div class="page-section nopadding cs-nomargin" style="padding-top: 200px; padding-bottom: 150px; margin-bottom: 0px; background: url(https://images.pexels.com/photos/56832/road-asphalt-space-sky-56832.jpeg?cs=srgb&dl=pexels-pixabay-56832.jpg&fm=jpg) no-repeat center / cover;">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+						<div class="element-title">
+							<h1 style="font-size: 40px; color: #505050; text-transform: uppercase; line-height: 50px; margin-bottom: 25px; text-align:center;">
+								We are here to help you out<br>With most popular workshops</h1>
+							<p style="font-size: 28px; letter-spacing: 1px; color: black !important; text-align:center; margin-bottom: 15px;">
+								<b>Find your ally</b></p>
+						</div>
+					</div>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+						<div style="border-radius: 20px; background-color: darkblue !important;" class="main-search fancy bg-holder">
+							<form action="{% url 'search' %}" method="GET">
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-5 col-xs-12">
+										<div class="field-holder">
+											<input style="width: 100%;" type="text" placeholder=" Enter Workshop name" name="keyword">
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
+										<div class="field-holder">
+											<ul>
+												<li class="select-location">
+													<div class="foodbakery-locations-fields-group foodbakery-focus-out">
+														<span class="foodbakery-search-location-icon"><i class="icon-location"></i></span>
+														<span id="foodbakery_radius_location_open333" class="foodbakery-radius-location"></span>
+														<input style="width:100%; " type="text" class="location-field-text filter" placeholder="Enter the Location" name="address" id="id_address" required>
+														<input type="hidden" name="lat" value="" id="id_latitude">
+														<input type="hidden" name="lng" value="" id="id_longititude">
+													</div>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+										<div class="field-holder">
+											<button style="width:100%" type="submit"><input style="background-color: red;" type="submit" value="Search"></button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<!-- Main Search End -->
+		
+		<!-- Top Restarurants Section Start -->
+		<div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 0px;margin-bottom: 0px;background: #ffffff;">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="element-title" style="text-align: center;">
+							<h2>Popular Workshops</h2>
+							<p>Explore the services from the top most workshops</p>
+						</div>
+					</div>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="company-logo" >
+							<ul style="text-align: center; margin-top: 20px;">
+								{% for vendor in vendors %}
+								<li class="has-border">
+									<figure>
+										{% if vendor.user_profile.profile_picture %}
+										<a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
+										{% else %}
+										<a href="#"><img src="{% static 'images/vendor icon.jpg' %}" class="attachment-full size-full wp-post-image" alt=""></a>
+										{% endif %}
+									</figure>
+								</li>
+                                {% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Top Restarurants Section End -->
+		<!-- Choose From Most Popular Listin Start -->
+		<div class="container-fluid bg-white">
+             <img style="margin-top: 25px; margin-bottom: 25px;" src="{% static 'images/page.png' %}" alt="">
+		</div>
+	</div>
+	<!-- Main Section End -->
+{% endblock %}
