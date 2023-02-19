@@ -10,6 +10,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from vendor.models import Vendor
 from django.contrib.gis.geos import GEOSGeometry
+from django.views.decorators.cache import cache_control
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from orders.models import Orders,Order_images,Models
@@ -83,8 +84,7 @@ def registerVendor(request):
             email_template = 'accounts/emails/account_verification_email.html'
             send_verification_email(request,user, mail_subject, email_template) 
 
-            messages.success(request, 'Registration Sucessful')
-            messages.success(request, 'Check your E-mail')
+            messages.success(request, 'Registration Sucessful. Check your E-mail')
             return redirect('registerVendor')
         else:
             print('Invalid form')
@@ -114,7 +114,8 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Invalid activation link.')         
         return redirect('myAccount')
-
+        
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     if request.user.is_authenticated:
         messages.warning(request,'You already logged in !')
@@ -146,6 +147,7 @@ def myAccount(request):
     redirectUrl = detect_user(user)
     return redirect(redirectUrl)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url ='login')
 @user_passes_test(check_role_user)
 def userHome(request):
@@ -155,6 +157,8 @@ def userHome(request):
     print(user)
     return render(request,'home.html',{'orders':orders,'vendors':vendors})
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
 def vendorHome(request):
@@ -203,16 +207,19 @@ def user_dashboard(request):
               }
     return render(request,'accounts/user_dashboard.html',context)      
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def my_orders(request):
     orders = Orders.objects.filter(user=request.user).order_by('-created_at')
     context = {'orders':orders}
     return render(request, 'user/my_orders.html', context)     
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def v_orders(request):
     vendor = Vendor.objects.get(user=request.user)
     orders = Orders.objects.filter(vendor=vendor).order_by('-created_at')
     context = {'orders':orders}
     return render(request, 'vendor/my_orders.html', context)      
+
 
 def my_orders_detail(request, order_id):
     order = Orders.objects.get(id=order_id)
@@ -222,6 +229,7 @@ def v_orders_detail(request, order_id):
     order = Orders.objects.get(id=order_id)
     return render(request, 'vendor/my_orders_detail.html',{'order':order})    
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -255,6 +263,7 @@ def reset_password_validate(request, uidb64, token):
         messages.error(request, 'This link has been expired')
         return redirect('myAccount')    
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def reset_password(request):
     if request.method == 'POST':
         password = request.POST['password']
@@ -308,37 +317,7 @@ def search(request):
 
         return render(request, 'accounts/on_road.html',context) 
 
-def search_current(request):
-    print('yyyyyyyyyyyyyyyyyyyyyyyyy')
-    if get_or_set_current_location(request) is not None:
-        print('llllllllllllllllllllllllllllll')
-
-        pnt = GEOSGeometry('POINT(%s %s)' % (get_or_set_current_location(request)))   
-        vendors = Vendor.objects.filter(user_profile__location__distance_lte=(pnt, D(km=20))).annotate(distance=Distance("user_profile__location", pnt)).order_by("distance")
-        print(vendors)    
-        for v in vendors:
-            v.kms = round(v.distance.km, 1) 
-        return render(request, 'accounts/on_road.html',{'vendors':vendors}) 
-    return redirect('on_road')       
-   
-
-def get_or_set_current_location(request):
-    print('wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww')
-    if "lat" in request.session:
-        print('cccccccccccccccccccccccccccccccc')
-        lat = request.session['lat']        
-        lng = request.session['lng']
-        return lng, lat 
-    elif "lat" in request.GET:
-        print('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
-        lat = request.GET('lat')           
-        lng = request.GET('lng')
-        request.session['lat'] = lat           
-        request.session['lng'] = lng  
-        return lng, lat
-    else:
-        return None  
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url ='login')
 def order(request,vendor_id):
     print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
@@ -371,6 +350,7 @@ def order(request,vendor_id):
 
     form = OrderForm()
     return render(request, 'accounts/order.html',{'form':form,'vendor':vendor})
+
 
 def service(request, vendor_id):
     vendor = Vendor.objects.get(id=vendor_id)  

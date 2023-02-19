@@ -156,7 +156,7 @@ MESSAGE_TAGS = {
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'django.ajio@gmail.com'
-EMAIL_HOST_PASSWORD = 'gcngfpzjczulpdsu'
+EMAIL_HOST_PASSWORD = 'yuiutmzynlgelhqj'
 EMAIL_PORT = 587
 
 GOOGLE_API_KEY = 'AIzaSyCwqMrM1jXgqzvygFHo0hcT1WhB7NCpQy0'

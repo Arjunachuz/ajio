@@ -17,10 +17,10 @@
 					<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 						<div class="login-option">
 							{% if 'registerVendor' in request.path %}
-							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerUser' %}">
+							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'login' %}">LOGIN</a><a class="get-start-btn" href="{% url 'registerUser' %}">
 								Register User</a> 
                             {% elif 'registerUser' in request.path  %}
-							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerVendor' %}">
+							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'login' %}">LOGIN</a><a class="get-start-btn" href="{% url 'registerVendor' %}">
 								Register Workshop</a>
                             {% elif 'login' in request.path  %}
 							<a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'user_dashboard' %}">{{user.first_name}}</a><a class="get-start-btn" href="{% url 'registerUser' %}">

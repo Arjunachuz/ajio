@@ -3,6 +3,25 @@
 {% block content %}
 <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
 	<!-- Main Section Start -->
+	{% for order in orders %}
+	{% if order.status == 'ACCEPTED' %}
+	<div class="alert alert-info show-notification" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Your service request on {{order.created_at}} is Accepted. Check your Mail for more details.</strong>
+    </div>
+	{% elif order.status == 'DECLINED' %}
+	<div class="alert alert-info show-notification" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Your service request on {{order.created_at}} is Declined. Check your Mail for more details.</strong>
+    </div>
+	{% endif %}
+	{% endfor %}  
+
+	{% include 'includes/alerts.html' %}
 	<div class="main-section">
 		<!-- Home Pages Elements Strat -->
 		<!-- Main Search Start -->
@@ -33,7 +52,7 @@
 													<div class="foodbakery-locations-fields-group foodbakery-focus-out">
 														<span class="foodbakery-search-location-icon"><i class="icon-location"></i></span>
 														<span id="foodbakery_radius_location_open333" class="foodbakery-radius-location"></span>
-														<input style="width:100%; " type="text" class="location-field-text filter" placeholder="Enter the Location" name="address" id="id_address" required>
+														<input style="width:100%; " type="text" class="location-field-text filter" placeholder="Enter the Location" name="address" id="id_address">
 														<input type="hidden" name="lat" value="" id="id_latitude">
 														<input type="hidden" name="lng" value="" id="id_longititude">
 													</div>
@@ -92,5 +111,10 @@
              <img style="margin-top: 25px; margin-bottom: 25px;" src="{% static 'images/page.png' %}" alt="">
 		</div>
 	</div>
+	<script>
+		setInterval(function() {
+		  location.reload();
+		}, 5000); // Refresh the page every 5 seconds
+	  </script>
 	<!-- Main Section End -->
 {% endblock %}

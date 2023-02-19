@@ -30,7 +30,6 @@ urlpatterns = [
     path('on_road/',views.on_road, name='on_road'),
 
     path('search/',views.search, name='search'),
-    path('search_current/',views.search_current, name='search_current'),
 
     path('service/<int:vendor_id>/',views.service, name='service'),
     
