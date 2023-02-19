@@ -21,12 +21,19 @@
         <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; flex-direction: column;">
         <h1 style=" color:green; text-align: center;">SUCCESS !</h1>
         <br>
+        {% if order.service == 'HOME' %}
+        <h2 style="text-align: center;">Your Service will be provided on {{ order.date }}.</h2>
+        <br>
+        {% else %}
         <h2 style="text-align: center;">Your Service is On the way...</h2>
+        {% endif %}
         </div>
+        {% if order.service == 'ROAD' %}
         <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; justify-content:center;">
             <div style="width:100%; margin:auto; display: flex; justify-content:center;">
                 <img style="width: 250px;" src="{% static 'images/ally1.jpg' %}" alt="">
             </div>
+        {% endif %}    
             
         </div>
         <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; flex-direction: column;">

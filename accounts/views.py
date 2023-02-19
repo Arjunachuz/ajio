@@ -154,7 +154,6 @@ def userHome(request):
     user = request.user
     orders = Orders.objects.filter(user=user,is_seen=False)
     vendors = Vendor.objects.all()[:8]
-    print(user)
     return render(request,'home.html',{'orders':orders,'vendors':vendors})
 
 
@@ -162,9 +161,6 @@ def userHome(request):
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
 def vendorHome(request):
-    print(request.user)
-    vendor_id = request.user.id
-    print(vendor_id)
     vendor = Vendor.objects.get(user__id=vendor_id)
     orders = Orders.objects.filter(vendor=vendor,status='NEW').order_by('-created_at')
     return render(request,'accounts/vendorHome.html',{'orders':orders})
@@ -285,7 +281,6 @@ def reset_password(request):
 @login_required(login_url ='login')
 def on_road(request):
     user = request.user
-    print(user)
     vendors = Vendor.objects.filter(user__is_active=True)
     context = {'vendors':vendors}
     return render(request, 'accounts/on_road.html',context)    
@@ -320,17 +315,12 @@ def search(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url ='login')
 def order(request,vendor_id):
-    print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
     user = request.user
-    print(user)
     vendor = Vendor.objects.get(id=vendor_id)
     if request.method == 'POST':
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
-        print('inside request')
         form = OrderForm(request.POST)
         images = request.FILES.getlist('images')
         if form.is_valid():
-            print('form is valid')
             order = form.save(commit=False)
             order.user = user
             order.vendor = vendor
@@ -358,21 +348,19 @@ def service(request, vendor_id):
     return render(request, 'accounts/service.html',{'vendor':vendor}) 
 
 def home_service(request,vendor_id):
-    print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
     user = request.user
-    print(user)
     vendor = Vendor.objects.get(id=vendor_id)
     if request.method == 'POST':
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
-        print('inside request')
         form = OrderForm(request.POST)
         images = request.FILES.getlist('images')
         date = request.POST.get('myDate')
+        current_date = datetime.date.today().isoformat()
+        if date < current_date:
+            messages.error(request, 'Please Select a date which is not in the past')
+            form = OrderForm()
+            return render(request, 'accounts/on_home_request.html',{'form':form,'vendor':vendor})
         time = request.POST.get('myTime')
-        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',date)
-        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',time)
         if form.is_valid():
-            print('form is valid')
             order = form.save(commit=False)
             order.user = user
             order.vendor = vendor
@@ -394,12 +382,11 @@ def home_service(request,vendor_id):
             print(form.errors)
 
     form = OrderForm()
-    return render(request, 'accounts/home_service.html',{'form':form,'vendor':vendor})
+    return render(request, 'accounts/on_home_request.html',{'form':form,'vendor':vendor})
 
 def load_models(request):
     vehicle_id = request.GET.get('vehicle_id')
     models = Models.objects.filter(vehicle_id=vehicle_id).all()
-    print(models)
     return render(request, 'accounts/load_models.html',{'models':models})    
 
 def order_detail(request,order_id):
@@ -410,7 +397,6 @@ def order_detail(request,order_id):
 def accept(request,order_id):
     order = Orders.objects.get(id=order_id)
     user = order.user
-    print(user)
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number')
         if not order.date:
@@ -430,10 +416,8 @@ def accept(request,order_id):
 def order_bill(requset,order_id=None):
     user = requset.user
     vendor_id = user.id
-    print(vendor_id)
     vendor = Vendor.objects.get(user__id=vendor_id)
     orders = Orders.objects.filter(Q(vendor=vendor,status='ACCEPTED') | Q(vendor=vendor,status='PENDING'))
-    print(orders)
     if requset.method == 'POST':
         price = requset.POST.get('price')
         order = Orders.objects.get(id=order_id)
@@ -446,7 +430,6 @@ def order_bill(requset,order_id=None):
 def decline(request,order_id):
     order = Orders.objects.get(id=order_id)
     user = order.user
-    print(user)
     if request.method == 'POST':
         message = request.POST.get('message')
         order.msg = message
@@ -459,32 +442,24 @@ def decline(request,order_id):
 
         return redirect('myAccount')
 
-    return render(request, 'accounts/order_decline.html',{'order':order})    
+    return render(request, 'accounts/order_decline.html',{'order':order})   
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def end_page(request, uidb64, order_id):
-    print('ENDPAGEEEEEEEEEEEEEEEEEEEEEE')
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
-        print(uid)
         user = User._default_manager.get(pk=uid)
-        print(user)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
     if user is not None:
-            print('pppppppppppppppppppppppppp')
             order = Orders.objects.get(id=order_id) 
-            print('kkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-            print(order)
-            print(order.status)
             if order.status:
                 if order.status == 'ACCEPTED':
-                    print('yesssss')
                     order.status = 'PENDING' 
                     order.is_seen = True
-                    order.save()
-                    print(order.status)    
+                    order.save()   
                 else:    
                     order.is_seen = True
                     order.save()    
@@ -496,7 +471,6 @@ def end_page(request, uidb64, order_id):
 @login_required(login_url='login')
 def u_profile(request):
     profile = get_object_or_404(UserProfile, user=request.user)
-
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
         user_form = UserInfoForm(request.POST, instance=request.user)
