@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,10 +89,10 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.postgresql',
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'ajio_database',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': 'localhost', 
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'), 
     }
 }
 
@@ -154,12 +154,12 @@ MESSAGE_TAGS = {
 
 # email configuration
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'django.ajio@gmail.com'
-EMAIL_HOST_PASSWORD = 'yuiutmzynlgelhqj'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
-GOOGLE_API_KEY = 'AIzaSyCwqMrM1jXgqzvygFHo0hcT1WhB7NCpQy0'
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 
 
 os.environ['PATH'] = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo') + ';' + os.environ['PATH']

@@ -2,57 +2,30 @@
 {% load static %}
 {% block content %}
     <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}"></script>
-
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-    <div class="container mt-5">
-      <h2 class="text-center mb-3">Order Detail</h2>
-      <br>
-      <div class="row">
-        <div class="col-md-6">
-          <p>
-            <strong>Service:</strong> {{ order.service }}
-          </p>
-          <p>
-            <strong>Vehicle:</strong> {{ order.vehicle }}
-          </p>
-          <p>
-            <strong>Type:</strong> {{ order.type.name }}
-          </p>
-          <p>
-            <strong>Model:</strong> {{ order.model.name }}
-          </p>
-          <p>
-            <strong>Defect:</strong> {{ order.defect.name }}
-          </p>
-          <p>
-            <strong>Description:</strong> {{ order.description }}
-          </p>
-          <p>
-            <strong>Customer NO:</strong> {{ order.u_phone_number }}
-          </p>
-          {% if order.date %}
-          <p>
-            <strong>Requested Date and Time:</strong> {{ order.date }} | {{ order.time }}
-          </p>
-          {% endif %}
-          <p>
-            <strong>Location:</strong>
-          </p>
+    <div style=" padding: 20px; width:95%; min-height: auto; background-color:rgba(200, 198, 217, 0.83); margin: auto; display: flex; flex-direction: column; margin-top: 70px;">
+        <br>
+        <h1 style="text-align: center;">Service Request Details</h1>
+        <br>
+        <h4 style="text-align: center;">Service : <b>{{order.service}}</b></h4>
+        <h4 style="text-align: center;">Vehicle : <b>{{order.vehicle}}</b></h4>
+        <h4 style="text-align: center;">Type : <b>{{order.type}}</b></h4>
+        <h4 style="text-align: center;">Model : <b>{{order.model}}</b></h4>
+        <h4 style="text-align: center;">Defect : <b>{{order.defect}}</b></h4>
+        <h4 style="text-align: center;">Description : <b>{{order.description}}</b></h4>
+        <h4 style="text-align: center;">Customer No : <b>{{order.u_phone_number}}</b></h4>
+        {% if order.date %}
+        <h4 style="text-align: center;">Date for Service: <b>{{order.date}} - {{order.time}}</b></h4>
+        {% endif %}
+        <h3 style="text-align: center; color: darkblue;">Location</h3>
+        <br>
+        <div id="map" style="width: 300px; height:300px; margin: auto;"></div>
         </div>
-        <div class="col-md-6">
-          <p class="text-center">
-              <!-- <strong>Location</strong> -->
-          </p>
-          
-        </div>
-        <div id="map" style="width:400px; height:400px;"></div>
-      </div>
-      <h3 class="text-center mt-3"></h3>
       <div class="row">
         <div class="col-lg-12" style="height: max-content; text-align: center; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px;">
             {% for image in images %}
@@ -63,7 +36,7 @@
           </div>
       </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-5" style="margin-bottom: 20px;">
         <div class="col-md-12 text-center">
           <a href="{% url 'accept' order.id %}"><button class="btn btn-success">Accept</button></a>
           <a href="{% url 'decline' order.id %}"><button class="btn btn-danger">Decline</button></a>

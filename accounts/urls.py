@@ -42,6 +42,8 @@ urlpatterns = [
     path('order_bill/<int:order_id>/',views.order_bill, name='order_bill'),
     path('order_bill/',views.order_bill, name='order_bill'),
 
+    path('user_bill/',views.user_bill, name='user_bill'),
+
     path('accept/<int:order_id>/',views.accept, name='accept'),
     path('decline/<int:order_id>/',views.decline, name='decline'),
 

@@ -71,8 +71,11 @@
             <![endif]-->
     
     </head>
-   
+{% if 'order_detail' in request.path %}
+<body onload="initMap({{order.latitude}}, {{order.longitude}});">
+{% else %}    
 <body>
+{% endif %}    
      
     {% include 'includes/navbar.html' %}
 

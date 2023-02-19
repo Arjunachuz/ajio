@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+<div style="min-height: 600px; margin-top: 50px;" class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="user-orders-list">
+            <div class="responsive-table">
+                <ul class="table-generic">
+                    <li class="order-heading-titles">
+                        <div>Date</div>
+                        <div>Service</div>
+                        <div>Model</div>
+                        <div>Defect</div>
+                        <div>Detail</div>
+                    </li>
+                    {% for order in orders %}
+                    <li class="order-heading-titles">
+                        <div>{{order.created_at}}</div>
+                        <div>{{order.service}}</div>
+                        <div>{{order.model}}</div>
+                        <div>{{order.defect}}</div>
+                        <div><a href="{% url 'order_detail' order.id %}"><i class="icon-plus2 text-color"></i></a></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

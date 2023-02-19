@@ -3,6 +3,7 @@
         <ul>
             <li class="{% if '/accounts/user_dashboard/' == request.path or '/accounts/user/' == request.path %}active{% endif %}"><a href="{% url 'user_dashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
             <li class="{% if 'my_orders' in request.path or 'my_orders_detail' in request.path %}active{% endif %}"><a href="{% url 'u_my_orders' %}"><i class="icon-add_shopping_cart"></i>My Orders</a></li>
+            <li class="{% if 'user_bill' in request.path %}active{% endif %}"><a href="{% url 'user_bill' %}"><i class="icon-file-text2"></i>My Bills</a></li>
             <li class="{% if 'profile' in request.path %}active{% endif %}"><a href="{% url 'u_profile' %}"><i class="icon-build"></i>My Profile</a></li>
             <li><a class="logout-btn" href="{% url 'logout' %}"><i class="icon-log-out"></i>Signout</a></li>
         </ul>

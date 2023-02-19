@@ -1,0 +1,37 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+    {% block content %}
+    <div class="main-section">
+        {% include 'includes/u_cover.html' %}
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- load the side bar -->
+                    {% include 'includes/u_sidebar.html' %}
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                                 <h5>My Bills</h5>
+                                 <br>
+                                 {% for order in orders %}
+                                 <div style=" padding: 35px; background-color:white; margin: auto; display: flex; flex-direction: column;">
+                                    <div style=" margin: auto; width:100%; height:fit-content; background-color: bisque; display: flex; flex-direction: column; margin-bottom: 25px;">
+                                      <h3 style="text-align: center;">{{order.vendor.vendor_name}}</h3>
+                                      <h5 style="text-align: center;">{{order.created_at}}</h5>
+                                      <h5 style="text-align: center;">{{order.model}}</h5>
+                                      <h5 style="text-align: center;">{{order.defect}}</h5>
+                                      <h4 style="text-align: center;">Total Cost : {{order.price}} Rs </h4>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    

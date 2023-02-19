@@ -161,9 +161,10 @@ def userHome(request):
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
 def vendorHome(request):
+    vendor_id = request.user.id
     vendor = Vendor.objects.get(user__id=vendor_id)
     orders = Orders.objects.filter(vendor=vendor,status='NEW').order_by('-created_at')
-    return render(request,'accounts/vendorHome.html',{'orders':orders})
+    return render(request,'v_home.html',{'orders':orders})
 
 @login_required(login_url ='login')
 @user_passes_test(check_role_vendor)
@@ -214,6 +215,7 @@ def v_orders(request):
     vendor = Vendor.objects.get(user=request.user)
     orders = Orders.objects.filter(vendor=vendor).order_by('-created_at')
     context = {'orders':orders}
+    print(orders)
     return render(request, 'vendor/my_orders.html', context)      
 
 
@@ -280,7 +282,6 @@ def reset_password(request):
 
 @login_required(login_url ='login')
 def on_road(request):
-    user = request.user
     vendors = Vendor.objects.filter(user__is_active=True)
     context = {'vendors':vendors}
     return render(request, 'accounts/on_road.html',context)    
@@ -392,7 +393,7 @@ def load_models(request):
 def order_detail(request,order_id):
     order = Orders.objects.get(id=order_id)
     images = Order_images.objects.filter(order=order)
-    return render(request, 'accounts/order_detail.html',{'order':order,'images':images})
+    return render(request, 'request_detail.html',{'order':order,'images':images})
 
 def accept(request,order_id):
     order = Orders.objects.get(id=order_id)
@@ -425,7 +426,11 @@ def order_bill(requset,order_id=None):
         order.status = 'COMPLETED'
         order.save()
         return redirect('myAccount')
-    return render(requset, 'accounts/order_bill.html',{'orders':orders})    
+    return render(requset, 'vendor/my_bills.html',{'orders':orders})    
+
+def user_bill(request):
+    orders = Orders.objects.filter(user=request.user, status = 'COMPLETED').order_by('-created_at')    
+    return render(request, 'user/user_bill.html',{'orders':orders})
 
 def decline(request,order_id):
     order = Orders.objects.get(id=order_id)
