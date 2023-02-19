@@ -1,0 +1,68 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+
+
+    
+{% if order.status == 'COMPLETED' %}
+    <!-- Completed -->
+    <div style=" padding:10px; width:90%; min-height: 600px; background-color:white; margin: auto; display: flex; justify-content:center; margin-top: 50px;  ">
+        <div style="margin: auto; display: flex; flex-direction: column;">
+            <h1>This Service request has already Completed !</h1>
+            <a style=" text-align: center; margin-bottom: 10px;" href="{% url 'myAccount' %}"><button style="margin-top: 50px;" class="btn btn-danger btn-lg">Go Home</button></a>
+        </div>
+        </div>
+{% else %}
+    {% if order.v_phone_number %}
+     <!-- success -->
+        <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; justify-content:center; margin-top: 50px;  ">
+        <img style="margin-top: 50px; margin-bottom: 50px;" src="{% static 'images/success.png' %}" alt="">
+        </div>
+        <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; flex-direction: column;">
+        <h1 style=" color:green; text-align: center;">SUCCESS !</h1>
+        <br>
+        <h2 style="text-align: center;">Your Service is On the way...</h2>
+        </div>
+        <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; justify-content:center;">
+            <div style="width:100%; margin:auto; display: flex; justify-content:center;">
+                <img style="width: 250px;" src="{% static 'images/ally1.jpg' %}" alt="">
+            </div>
+            
+        </div>
+        <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; flex-direction: column;">
+            <h2 style="text-align: center;">Keep in contact with your ally:</h2>
+            <br>
+            <h3 style="text-align: center;">{{order.v_phone_number}}</h3>
+            {% if not order.date %}
+            <br>
+            <h2 style="text-align: center;">Estimated time of arrival : {{order.eta}}</h2>
+            {% endif %}
+            <a style="text-align: center; margin-bottom: 10px;" href="{% url 'myAccount' %}"><button style="margin-top: 50px;" class="btn btn-danger btn-lg">Go Home</button></a>
+            </div>
+
+    {% elif order.msg %}
+    <!-- declined -->   
+        <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; justify-content:center; margin-top: 50px;  ">
+        <img style=" width: 150px; margin-top: 50px;" src="{% static 'images/declined.jpg' %}" alt="">
+        </div>
+        <div style="width:90%; min-height: auto; background-color:white; margin: auto; display: flex; flex-direction: column;">
+        <h1 style=" color:green; text-align: center;">SORRY !</h1>
+        <br>
+        <h2 style="text-align: center;">Your Service has been Declined !</h2>
+        </div>
+
+        <div style="width:90%; min-height: 300px; background-color:white; margin: auto; display: flex; flex-direction: column;">
+            <br>
+            <h2 style="text-align: center;">The requested Ally declined your request</h2>
+            <br>
+            <h3 style="text-align: center;"><b>"{{order.msg}}"</b></h3>
+            <br>
+            <a style="text-align: center; margin-bottom: 10px;" href="{% url 'myAccount' %}"><button style="margin-top: 50px;" class="btn btn-danger btn-lg">Go Home</button></a>
+            </div>
+    {% endif %}    
+{% endif %}    
+
+
+
+
+{% endblock %}

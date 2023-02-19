@@ -17,7 +17,7 @@
         {% csrf_token %}
         <div class="form-group">
           <label for="reason">Reason for Declining</label>
-          <textarea class="form-control" id="reason" name="message"></textarea>
+          <textarea class="form-control" id="reason" name="message" required></textarea>
         </div>
         <button type="submit" class="btn btn-danger">Decline</button>
       </form>

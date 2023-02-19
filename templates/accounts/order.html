@@ -5,17 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}"></script>
-    <script>
-        function createLink() {
-          var lat = document.getElementById("lat").value;
-          var lng = document.getElementById("lng").value;
-          var link = "https://maps.google.com/?q=" + lat + "," + lng;
-        //   document.getElementById("locationLink").href = link;
-        //   $('#id_location').val(link);
-          document.getElementById("id_location").value = link;
-        }
-      </script>
+
 
 </head>
 <body>
@@ -49,11 +39,6 @@
          <br>
         
       </ul>
-      <!-- <input type="text" id="lat" placeholder="Enter your Current Latitude">
-      <input type="text" id="lng" placeholder="Enter your Current Longitude">
-      <button type="button" onclick="createLink()">Create link</button> -->
-      <!-- <br>
-      <br> -->
       <input type="file" name="images" multiple>
       <br>
       <br>

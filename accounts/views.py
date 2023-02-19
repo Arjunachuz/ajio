@@ -114,7 +114,7 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Invalid activation link.')         
         return redirect('myAccount')
-        
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     if request.user.is_authenticated:
@@ -166,7 +166,7 @@ def vendorHome(request):
     vendor_id = request.user.id
     print(vendor_id)
     vendor = Vendor.objects.get(user__id=vendor_id)
-    orders = Orders.objects.filter(vendor=vendor,status='NEW')
+    orders = Orders.objects.filter(vendor=vendor,status='NEW').order_by('-created_at')
     return render(request,'accounts/vendorHome.html',{'orders':orders})
 
 @login_required(login_url ='login')
@@ -343,13 +343,14 @@ def order(request,vendor_id):
                     images = image
                 )
                 order_images.save()
+            messages.success(request, 'Service request send succesfully !')
             return redirect('myAccount')    
             
         else:
             print(form.errors)
 
     form = OrderForm()
-    return render(request, 'accounts/order.html',{'form':form,'vendor':vendor})
+    return render(request, 'accounts/on_road_request.html',{'form':form,'vendor':vendor})
 
 
 def service(request, vendor_id):
@@ -386,6 +387,7 @@ def home_service(request,vendor_id):
                     images = image
                 )
                 order_images.save()
+            messages.success(request, 'Service request send succesfully !')    
             return redirect('myAccount')    
             
         else:
@@ -486,9 +488,9 @@ def end_page(request, uidb64, order_id):
                 else:    
                     order.is_seen = True
                     order.save()    
-                return render(request, 'accounts/end_page.html',{'order':order}) 
+                return render(request, 'end_page.html',{'order':order}) 
             else:
-                return render(request, 'accounts/end_page.html')       
+                return render(request, 'end_page.html')       
     return redirect('myAccount')  
 
 @login_required(login_url='login')

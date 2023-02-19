@@ -1,18 +1,17 @@
 {% extends 'accounts/base.html' %}
 {% load static %}
 {% block content %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
 	<!-- Main Section Start -->
 	{% for order in orders %}
 	{% if order.status == 'ACCEPTED' %}
-	<div class="alert alert-info show-notification" role="alert">
+	<div class="alert alert-success show-notification" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         <strong>Your service request on {{order.created_at}} is Accepted. Check your Mail for more details.</strong>
     </div>
 	{% elif order.status == 'DECLINED' %}
-	<div class="alert alert-info show-notification" role="alert">
+	<div class="alert alert-danger show-notification" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -42,7 +41,7 @@
 								<div class="row">
 									<div class="col-lg-6 col-md-6 col-sm-5 col-xs-12">
 										<div class="field-holder">
-											<input style="width: 100%;" type="text" placeholder=" Enter Workshop name" name="keyword">
+											<input id="workshop-name" style="width: 100%;" type="text" placeholder=" Enter Workshop name" name="keyword">
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
@@ -92,9 +91,9 @@
 								<li class="has-border">
 									<figure>
 										{% if vendor.user_profile.profile_picture %}
-										<a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
+										<a href="{% url 'on_road' %}"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
 										{% else %}
-										<a href="#"><img src="{% static 'images/vendor icon.jpg' %}" class="attachment-full size-full wp-post-image" alt=""></a>
+										<a href="{% url 'on_road' %}"><img src="{% static 'images/vendor icon.jpg' %}" class="attachment-full size-full wp-post-image" alt=""></a>
 										{% endif %}
 									</figure>
 								</li>
@@ -111,10 +110,13 @@
              <img style="margin-top: 25px; margin-bottom: 25px;" src="{% static 'images/page.png' %}" alt="">
 		</div>
 	</div>
-	<script>
+	<!-- <script>
+		var div = document.getElementById('workshop-name');
+		var value = div.innerHTML;
+		console.log(value)
 		setInterval(function() {
-		  location.reload();
+			location.reload();
 		}, 5000); // Refresh the page every 5 seconds
-	  </script>
+	  </script> -->
 	<!-- Main Section End -->
 {% endblock %}

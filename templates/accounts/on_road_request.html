@@ -1,0 +1,135 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+<div class="main-section">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 60px;margin-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                    <h4 class="text-center" style="margin-bottom: 0;">CREATE SERVICE REQUEST</h4>
+                    <br>
+                    <!-- <p class="text-center">Please fill this form to get yourself onboarded in the foodOnline marketplace.</p> -->
+                    <hr>
+                    <br>
+                    <div id="restaurant-sets-holder">
+                        <form class="form-fields-set foodbakery-dev-restaurant-form" method="post" data-models-url="{% url 'ajax_load_models' %}" id="orderform" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <ul class="register-add-restaurant-tab-container restaurant-information-tab-container">
+                                <li>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="row">
+                                                <ul >
+                                                    <li>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Select Vehicle</label>{{form.vehicle}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Select Type</label>{{form.type}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Select Vehicle Model</label>{{form.model}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Select Defect</label>{{form.defect}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Description of the cause ( optional )</label>{{form.description}}
+                                                            </div>
+                                                        </div>
+                                                       
+                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Images ( optional )</label>
+                                                                <input type="file" name="images" multiple>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Contact Number</label>{{form.u_phone_number}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Give current Latitude</label>{{form.latitude}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                            <div class="field-holder">
+                                                                <label>Give current Longitude</label>{{form.longitude}}
+                                                            </div>
+                                                        </div>
+                                                       
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                <ul style="text-align: center;" class="errorlist">
+                                    {% for field in form %}
+                                       {% if field.errors %}
+                                        {% for error in  field.errors %}
+                                           <li style="color: red;">{{error}}</li>
+                                        {% endfor %}
+                                       {% endif %}
+                                    {% endfor %}
+                                    <li style="color: red;">{{form.non_field_errors}}</li>
+                                </ul>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="field-holder">
+                                                <div style="text-align: center;" class="payment-holder">
+                                                    <input type="submit" value="Send Request" id="btn-next-restaurant-information" class="bgcolor">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                         {% include 'includes/alerts.html' %}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+<script>
+  $("#id_vehicle").change(function(){
+    const url = $("#orderform").attr("data-models-url");
+    const vehicleId = $(this).val();
+    console.log('url',url)
+
+    $.ajax({
+      url: url,
+      data: {
+        'vehicle_id': vehicleId
+      },
+      success: function (data) {
+        $("#id_model").html(data);
+      }
+    })
+  })
+</script>
+{% endblock %}
