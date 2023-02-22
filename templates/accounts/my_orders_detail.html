@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block content %}
+    <div class="main-section">
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- load the side bar -->
+                    {% include 'includes/a_sidebar.html' %}
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                               
+                                <div class="invoice-template">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <img src="{% static 'images/AJI.png' %}" class="img-responsive" alt="Logo" style="max-width: 150px; max-height: 50px;">
+                                      </div>
+                                      <div class="col-md-6 text-right">
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-md-12 text-center">
+                                        <h1>Service Details</h1>
+                                      </div>
+                                    </div>
+                                    <br>
+                                    <br>
+
+                                    <div class="row">
+                                      <div class="col-md-6 vendor-details">
+                                        <h2>{{order.vendor}}</h2>
+                                        <p><strong>Date:</strong>  {{ order.created_at }}</p>
+                                        <p><strong>Service:</strong> {{ order.service }}</p>
+                                        <p><strong>Model:</strong> {{ order.model }}</p>
+                                        <p><strong>Defect:</strong> {{ order.defect }}</p>
+                                        {% if order.status == 'DECLINED' %}
+                                        <p><strong>Rejection mail:</strong> {{ order.msg }}</p>
+                                        {% else %}
+                                        <p><strong>Phone Number:</strong> {{ order.v_phone_number }}</p>
+                                        {% endif %}
+                                      </div>
+                                      <div class="col-md-6 user-details">
+                                        <h2>{{order.user.username}}</h2>
+                                        <p><strong>Name:</strong> {{ order.user.first_name }} {{order.user.last_name}}</p>
+                                        <p><strong>Phone Number:</strong> {{ order.u_phone_number }}</p>
+                                        <p><strong>Email:</strong> {{ order.user.email }}</p>
+                                        {% if order.service == 'HOME' %}
+                                        <p><strong>Date of Service:</strong> {{ order.date }}</p>
+                                        {% endif %}
+                                        {% if order.price %}
+                                        <h3>Total Cost: ₹ {{ order.price }}</h3>
+                                        {% else %}
+                                        <h5>Payment not done.</h5>
+                                        {% endif %}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  
+                                  
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    
+ 

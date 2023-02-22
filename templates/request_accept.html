@@ -1,0 +1,25 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+<div style="min-height: 600px; background-color: rgb(217, 221, 237); width: 100%; display: flex; justify-content: center; align-items:center ;">
+    <form action="{% url 'accept' order.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="phone_number">Phone Number</label>
+          <input style="width: 400px;" type="text" class="form-control" id="phone_number" name="phone_number" required>
+        </div>
+        {% if not order.date %}
+        <div class="form-group">
+          <label for="eta">Estimated Time of Arrival</label>
+          <input type="text" class="form-control" id="eta" name="eta" required>
+        </div>
+        {% endif %}
+        <div class="field-holder">
+            <div style="text-align: center;" class="payment-holder">
+                <input type="submit" value="Submit" id="btn-next-restaurant-information" class="bgcolor">
+            </div>
+        </div>
+      </form>
+</div>
+
+{% endblock %}

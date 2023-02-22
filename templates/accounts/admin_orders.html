@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block content %}
+    <div class="main-section">
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- load the side bar -->
+                    {% include 'includes/a_sidebar.html' %}
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                                 <h5>ORDERS</h5>
+                                 <br>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="user-orders-list">
+                                            <div class="responsive-table">
+                                                <ul class="table-generic">
+                                                    <li class="order-heading-titles">
+                                                        <div>Id</div>
+                                                        <div>Service</div>
+                                                        <div>Customer</div>
+                                                        <div>Workshop</div>
+                                                        <div>Defect</div>
+                                                        <!-- <div>Cost</div> -->
+                                                        <div>Status</div>
+                                                        <div>Detail</div>
+                                                    </li>
+                                                    {% for order in orders %}
+                                                    <li class="order-heading-titles">
+                                                        <div>{{order.id}}</div>
+                                                        <div>{{order.service}}</div>
+                                                        <div>{{order.user}}</div>
+                                                        <div>{{order.vendor}}</div>
+                                                        <div>{{order.defect}}</div>
+                                                        <!-- {% if order.price %} -->
+                                                        <!-- <div>₹ {{order.price}}</div> -->
+                                                        <!-- {% else %} -->
+                                                        <!-- <div>Not Paid</div> -->
+                                                        <!-- {% endif %} -->
+                                                        {% if order.status == 'COMPLETED' %}
+                                                        <div><span class="order-status" style="background-color: #047a06;"><b>{{order.status}}</b></span></div>
+                                                        {% elif order.status == 'ACCEPTED' %}
+                                                        <div><span class="order-status" style="background-color:rgb(14, 47, 144)"><b>{{order.status}}</b></span></div>
+                                                        {% elif order.status == 'DECLINED' %}
+                                                        <div><span class="order-status" style="background-color:rgb(146, 8, 8)"><b>{{order.status}}</b></span></div>
+                                                        {% elif order.status == 'PENDING' %}
+                                                        <div><span class="order-status" style="background-color:darkgrey"><b>{{order.status}}</b></span></div>
+                                                        {% elif order.status == 'NEW' %}
+                                                        <div><span class="order-status" style="background-color:darkorange"><b>{{order.status}}</b></span></div>
+                                                        {% else %}
+                                                        <div><span class="order-status" style="background-color:black"><b>{{order.status}}</b></span></div>
+                                                        {% endif %}
+                                                        <div><a href="{% url 'admin_orders_detail' order.id %}"><i class="icon-plus2 text-color"></i></a></div>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    

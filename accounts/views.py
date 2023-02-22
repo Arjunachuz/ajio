@@ -15,6 +15,10 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from orders.models import Orders,Order_images,Models
 from django.db.models import Q
+from django.db.models import Count
+from django.utils import timezone
+from django.db.models.functions import ExtractMonth
+import calendar
 import datetime
 
 # Create your views here.
@@ -119,7 +123,7 @@ def activate(request, uidb64, token):
 def login(request):
     if request.user.is_authenticated:
         messages.warning(request,'You already logged in !')
-        return redirect('myAccount')
+        return redirect('myAccount')    
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -151,10 +155,14 @@ def myAccount(request):
 @login_required(login_url ='login')
 @user_passes_test(check_role_user)
 def userHome(request):
-    user = request.user
-    orders = Orders.objects.filter(user=user,is_seen=False)
-    vendors = Vendor.objects.all()[:8]
-    return render(request,'home.html',{'orders':orders,'vendors':vendors})
+    if request.user.is_active and request.user.is_blocked:
+        user = request.user
+        orders = Orders.objects.filter(user=user,is_seen=False)
+        vendors = Vendor.objects.all()[:8]
+        return render(request,'home.html',{'orders':orders,'vendors':vendors})
+    else:
+        messages.error(request, 'You are restricted from this Site') 
+        return redirect('login')   
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -412,7 +420,7 @@ def accept(request,order_id):
         send_service_email(request,user, mail_subject, email_template,order_id) 
 
         return redirect('myAccount')
-    return render(request, 'accounts/order_accept.html',{'order':order}) 
+    return render(request, 'request_accept.html',{'order':order}) 
 
 def order_bill(requset,order_id=None):
     user = requset.user
@@ -447,7 +455,7 @@ def decline(request,order_id):
 
         return redirect('myAccount')
 
-    return render(request, 'accounts/order_decline.html',{'order':order})   
+    return render(request, 'request_decline.html',{'order':order})   
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -512,11 +520,145 @@ def admin_login(request):
     return render(request, 'accounts/admin_login.html')    
 
 def admin_dashboard(request):
+    New = 0
+    Accepted = 0
+    Declined = 0
+    Completed = 0
+    Pending = 0
     if request.user.is_authenticated and request.user.is_admin:
+        labels = []
+        data = []
+        orders = (
+            Orders.objects.annotate(month=ExtractMonth("created_at"))
+            .values("month")
+            .annotate(count=Count("id"))
+            .values("month", "count")
+        )
 
-       return render(request, 'accounts/admin_dashboard.html') 
-    return redirect('admin_login')          
+        labels = [
+            "jan",
+            "feb",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+        ]
+        data = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        for d in orders:
+            labels.append(calendar.month_name[d["month"]])
+            data.append([d["count"]])
+        labels1 = []
+        data1 = []
+
+        queryset = Orders.objects.all()
+        for i in queryset:
+            if i.status == "NEW":
+                New += 1
+            elif i.status == "ACCEPTED":
+                Accepted += 1
+            elif i.status == "DECLINED":
+                Declined += 1
+            elif i.status == "COMPLETED":
+                Completed += 1
+            elif i.status == "PENDING":
+                Pending += 1
+
+        labels1 = [
+            "New",
+            "Pending",
+            "Accepted",
+            "Cancelled",
+            "Completed",
+        ]
+        data1 = [New, Pending, Accepted, Declined, Completed]
+        users = User.objects.filter(is_active=True,role=2)
+        users_count = users.count()
+        vendors = Vendor.objects.filter(user__is_active=True)
+        vendors_count = vendors.count()
+        orders = Orders.objects.filter(status='COMPLETED')
+        orders_count = orders.count()
+        
+        revenue = 0
+        for i in orders:
+                if i.price:
+                  revenue += int(i.price)
+
+        context = {
+                'users_count':users_count,
+                'vendors_count':vendors_count,
+                'orders_count':orders_count,
+                'revenue':revenue,
+                "labels1": labels1,
+                "data1": data1,
+                "labels": labels,
+                "data": data,
+            }       
+
+        return render(request, 'accounts/admin_dashboard.html',context) 
+    return redirect('admin_login')   
+
+def admin_orders(request):
+    if request.user.is_authenticated and request.user.is_admin:
+        orders = Orders.objects.all()
+        return render(request, 'accounts/admin_orders.html',{'orders':orders})
+    return redirect('admin_login')
+
+def admin_orders_detail(request, order_id):
+    if request.user.is_authenticated and request.user.is_admin:
+        order = Orders.objects.get(id=order_id)
+        return render(request, 'accounts/my_orders_detail.html',{'order':order}) 
+    return redirect('admin_login')    
+
+def admin_vendors(request):
+    if request.user.is_authenticated and request.user.is_admin:
+       vendors = Vendor.objects.all()
+       return render(request, 'accounts/admin_vendors.html',{'vendors':vendors})
+    return redirect('admin_login')
+
+def admin_users(request):
+    if request.user.is_authenticated and request.user.is_admin:
+       users = User.objects.filter(role=2)
+       return render(request, 'accounts/admin_users.html',{'users':users})
+    return redirect('admin_login')
+
+def admin_bill(request):
+    if request.user.is_authenticated and request.user.is_admin:
+       orders = Orders.objects.filter(status = 'COMPLETED').order_by('-created_at')    
+       return render(request, 'accounts/admin_bill.html',{'orders':orders})
+    return redirect('admin_login')
+
+def admin_logout(request):
+    auth.logout(request)
+    return redirect('admin_login')
 
 
+def user_block(request,id):
+    user = User.objects.get(id=id)
+    user.is_blocked = True
+    user.save()
+    messages.info(request, 'User has been Blocked')
+    return redirect('admin_users')
+    
+def user_unblock(request,id):
+    user = User.objects.get(id=id)
+    user.is_blocked = False
+    user.save()
+    messages.info(request, 'User has been Unblocked')
+    return redirect('admin_users')
 
+def vendor_block(request,id):
+    vendor = Vendor.objects.get(id=id)
+    vendor.user.is_blocked = True
+    vendor.user.save()
+    messages.info(request, 'Vendor has been Blocked')
+    return redirect('admin_vendors')
 
+def vendor_unblock(request,id):
+    vendor = Vendor.objects.get(id=id)
+    vendor.user.is_blocked = False
+    vendor.user.save()
+    messages.info(request, 'Vendor has been Unblocked')
+    return redirect('admin_vendors')

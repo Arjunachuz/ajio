@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block content %}
+
+    <div class="main-section">
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- load the side bar -->
+                    {% include 'includes/a_sidebar.html' %}
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                                 <h5>VENDORS</h5>
+                                 <br>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="user-orders-list">
+                                            <div class="responsive-table">
+                                                <ul class="table-generic">
+                                                    <li class="order-heading-titles">
+                                                        <div>Id</div>
+                                                        <div>Name</div>
+                                                        <div>Email</div>
+                                                        <div>Contact</div>
+                                                        <!-- <div>Cost</div> -->
+                                                        <div>Status</div>
+                                                        <div>Action</div>
+                                                    </li>
+                                                    {% for user in users %}
+                                                    <li class="order-heading-titles">
+                                                        <div>{{user.id}}</div>
+                                                        <div>{{user.first_name}}</div>
+                                                        <div>{{user.email}}</div>
+                                                        <div>{{user.phone_number}}</div>
+                                                        {% if user.is_active %}
+                                                        <div><span class="order-status" style="background-color: #047a06;"><b>Active</b></span></div>
+                                                        {% else %}
+                                                        <div><span class="order-status" style="background-color:rgb(255, 0, 30)"><b>Not Active</b></span></div>
+                                                        {% endif %}
+                                                        {% if user.is_blocked %}
+                                                        <div style="border:2px black; background-color: #ffffff;"><a style="color: rgb(0, 0, 0);" href="{% url 'user_unblock' user.id %}">Unblock</a></div>
+                                                        {% else %}
+                                                        <div style="border:2px black; background-color: #ffffff;"><a style="color: rgb(0, 0, 0);" href="{% url 'user_block' user.id %}">Block</a></div>
+                                                        {% endif %}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% include 'includes/alerts.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    

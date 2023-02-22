@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import User
 from vendor.models import Vendor
+from django.db.models import Count
 # Create your models here.
 class Defects(models.Model):
     name = models.CharField(max_length=100)
@@ -65,6 +66,8 @@ class Orders(models.Model):
 
     def __str__(self):
         return self.description
+
+  
 
 class Order_images(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)

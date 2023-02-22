@@ -56,7 +56,21 @@ urlpatterns = [
    
 
     path('u_profile/',views.u_profile, name='u_profile'),
-    path('admin/',views.admin_login, name='admin_login'),
+
+    path('admin_login/',views.admin_login, name='admin_login'),
+    path('admin_logout/',views.admin_logout, name='admin_logout'),
     path('admin_home/',views.admin_dashboard, name='admin_dashboard'),
+    path('admin_orders/',views.admin_orders, name='admin_orders'),
+    path('admin_orders_detail/<int:order_id>',views.admin_orders_detail, name='admin_orders_detail'),
+
+    path('admin_vendors/',views.admin_vendors, name='admin_vendors'),
+    path('admin_users/',views.admin_users, name='admin_users'),
+
+    path('admin_bill/',views.admin_bill, name='admin_bill'),
+    path('user_block/<int:id>/',views.user_block, name='user_block'),
+    path('user_unblock/<int:id>/',views.user_unblock, name='user_unblock'),
+    path('vendor_block/<int:id>/',views.vendor_block, name='vendor_block'),
+    path('vendor_unblock/<int:id>/',views.vendor_unblock, name='vendor_unblock'),
+
 
 ]
